@@ -1,14 +1,63 @@
 # sugra-api-skills
 
-Official [Sugra API](https://sugra.ai) skills for agents.
+<p align="center">
+  <img src="https://app.sugra.ai/images/brand/sugra-app-icon.svg" alt="sugra.ai" width="112" height="112" />
+</p>
 
-Sugra API is intelligence infrastructure: one HTTP API, one key, seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). An agent works it over HTTPS, over MCP, or both.
+<p align="center">
+  <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License&color=F5A623" alt="License"></a>
+</p>
 
-**Documentation truth:** [https://docs.sugra.ai](https://docs.sugra.ai) (search and Ask AI). This repository does not copy the endpoint catalog.
+Official [Sugra API](https://sugra.ai) skills for Claude, Grok, Codex, Cursor, Gemini, and ChatGPT.
+
+One HTTP API, one key, seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). Work it over HTTPS, over MCP, or both.
 
 This is not the MCP server ([sugra-api-mcp](https://github.com/Sugra-Systems/sugra-api-mcp)) and not the HTTP cookbook ([sugra-api-cookbook](https://github.com/Sugra-Systems/sugra-api-cookbook)).
 
-Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: https://sugra.ai/stats and docs.sugra.ai.
+Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: https://sugra.ai/stats.
+
+## Install
+
+Get a key at [app.sugra.ai/settings/billing](https://app.sugra.ai/settings/billing) (Free: 50 requests/day).
+
+### Claude Code
+
+```
+/plugin marketplace add Sugra-Systems/sugra-api-skills
+/plugin install sugra-api@sugra-api-skills
+```
+
+### Grok
+
+```
+grok plugin marketplace add Sugra-Systems/sugra-api-skills
+grok plugin install sugra-api --trust
+```
+
+### Codex
+
+```
+cp -R plugins/sugra-api/skills/. ~/.agents/skills/
+```
+
+### Cursor
+
+```
+cp -R plugins/sugra-api/skills/. ~/.cursor/skills/
+```
+
+### Gemini CLI
+
+```
+cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
+```
+
+### ChatGPT
+
+```
+# hosted MCP connector; ChatGPT does not load SKILL.md
+https://mcp.sugra.ai/mcp
+```
 
 ## Plugin `sugra-api`
 
@@ -24,37 +73,15 @@ Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 doma
 
 Author: Sugra Systems, Inc. License: MIT. Skills follow the [Agent Skills](https://agentskills.io/specification) format.
 
-## Install
+## Documentation
 
-Remote: [Sugra-Systems/sugra-api-skills](https://github.com/Sugra-Systems/sugra-api-skills).
+Endpoint reference, search, and Ask AI: [https://docs.sugra.ai](https://docs.sugra.ai)
 
-Claude Code:
-
-```
-/plugin marketplace add Sugra-Systems/sugra-api-skills
-/plugin install sugra-api@sugra-api-skills
-```
-
-Grok:
-
-```bash
-grok plugin marketplace add Sugra-Systems/sugra-api-skills
-grok plugin install sugra-api --trust
-```
-
-Codex: install the plugin from this repo (`.codex-plugin/plugin.json`), or copy each folder under `plugins/sugra-api/skills/` into `$HOME/.agents/skills/<slug>/`.
-
-Cursor: copy into `.cursor/skills/` or `~/.cursor/skills/`.
-
-Gemini CLI: `npx skills add` against this repo, or copy into `.agents/skills/`.
-
-ChatGPT does not load SKILL.md from disk. Point it at `https://mcp.sugra.ai/mcp`.
-
-From a local clone, pass the clone path to `marketplace add` instead of `Sugra-Systems/sugra-api-skills`.
+Machine companions: `https://sugra.ai/openapi.json`, `/sources`, `/stats`.
 
 ## Local check
 
-```bash
+```
 python scripts/check.py
 ```
 
