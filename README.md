@@ -5,16 +5,18 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License&color=F5A623" alt="License"></a>
+  <a href="https://github.com/Sugra-Systems/sugra-api-skills/releases"><img src="https://img.shields.io/badge/version-1.0.0-F5A623" alt="Version 1.0.0"></a>
+  <a href="https://pypi.org/project/sugra-api-mcp/"><img src="https://img.shields.io/pypi/v/sugra-api-mcp?label=sugra-api-mcp&color=F5A623" alt="sugra-api-mcp on PyPI"></a>
+  <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License" alt="License"></a>
 </p>
 
 Official [Sugra API](https://sugra.ai) skills for Claude, Grok, Codex, Cursor, Gemini, and ChatGPT.
 
-One HTTP API, one key, seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). Work it over HTTPS, over MCP, or both.
+**Sugra API aggregates 36 domains across 160+ primary sources. 1,500+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/settings/billing).**
+
+Seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). HTTPS and MCP are both complete paths. Live counts: https://sugra.ai/stats.
 
 This is not the MCP server ([sugra-api-mcp](https://github.com/Sugra-Systems/sugra-api-mcp)) and not the HTTP cookbook ([sugra-api-cookbook](https://github.com/Sugra-Systems/sugra-api-cookbook)).
-
-Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: https://sugra.ai/stats.
 
 ## Install
 
@@ -57,6 +59,12 @@ cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
 ```
 # hosted MCP connector; ChatGPT does not load SKILL.md
 https://mcp.sugra.ai/mcp
+```
+
+### MCP (local)
+
+```
+pip install sugra-api-mcp
 ```
 
 ## Plugin `sugra-api`
