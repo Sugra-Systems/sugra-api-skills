@@ -1,0 +1,14 @@
+{
+  "name": "sugra-api",
+  "displayName": "Sugra API",
+  "description": "Call the Sugra API from any agent over HTTPS. Discover endpoints, authenticate, cite sources. MCP is an optional connector, not the default path.",
+  "author": {
+    "name": "Sugra Systems, Inc.",
+    "email": "support@sugra.systems",
+    "url": "https://sugra.systems"
+  },
+  "homepage": "https://sugra.ai",
+  "repository": "https://github.com/Sugra-Systems/sugra-api-skills",
+  "license": "MIT",
+  "keywords": ["sugra", "api", "skills", "agents"]
+}
