@@ -140,6 +140,10 @@ def main() -> None:
         fail("plugin version")
     if claude_plugin.get("homepage") != "https://docs.sugra.ai":
         fail("plugin homepage must be docs.sugra.ai")
+    if claude_plugin.get("skills") not in ("./skills", "./skills/"):
+        fail("claude plugin skills path")
+    if "user's language" not in using:
+        fail("using-sugra-api must tell the agent to match the user's language")
     if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
         fail("plugin author")
     if claude_mkt["name"] != "sugra-api-skills" or grok_mkt["name"] != "sugra-api-skills":
@@ -166,6 +170,10 @@ def main() -> None:
     copy_lint(llms, "llms.txt")
     if "docs.sugra.ai" not in readme:
         fail("README must point at docs.sugra.ai")
+    if "Sugra-Systems/sugra-api-skills" not in readme:
+        fail("README must name the public GitHub path")
+    if "Not on GitHub yet" in readme:
+        fail("README still says the pack is unpublished")
     print("ok", len(EXPECTED), "skills")
 
 

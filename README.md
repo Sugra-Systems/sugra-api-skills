@@ -8,8 +8,6 @@ Sugra API is intelligence infrastructure: one HTTP API, one key, seven product d
 
 This is not the MCP server ([sugra-api-mcp](https://github.com/Sugra-Systems/sugra-api-mcp)) and not the HTTP cookbook ([sugra-api-cookbook](https://github.com/Sugra-Systems/sugra-api-cookbook)).
 
-**Not on GitHub yet.** Local draft. Do not `/plugin marketplace add` a GitHub path until this repo is published.
-
 Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: https://sugra.ai/stats and docs.sugra.ai.
 
 ## Plugin `sugra-api`
@@ -26,9 +24,9 @@ Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 doma
 
 Author: Sugra Systems, Inc. License: MIT. Skills follow the [Agent Skills](https://agentskills.io/specification) format.
 
-## Install (after GitHub publish)
+## Install
 
-Intended remote: `Sugra-Systems/sugra-api-skills`.
+Remote: [Sugra-Systems/sugra-api-skills](https://github.com/Sugra-Systems/sugra-api-skills).
 
 Claude Code:
 
@@ -37,10 +35,10 @@ Claude Code:
 /plugin install sugra-api@sugra-api-skills
 ```
 
-Grok (this folder today):
+Grok:
 
 ```bash
-grok plugin marketplace add C:\DEV-SUGRA\sugra-api-skills
+grok plugin marketplace add Sugra-Systems/sugra-api-skills
 grok plugin install sugra-api --trust
 ```
 
@@ -48,9 +46,11 @@ Codex: install the plugin from this repo (`.codex-plugin/plugin.json`), or copy 
 
 Cursor: copy into `.cursor/skills/` or `~/.cursor/skills/`.
 
-Gemini CLI: `npx skills add` against this repo after publish, or copy into `.agents/skills/`.
+Gemini CLI: `npx skills add` against this repo, or copy into `.agents/skills/`.
 
 ChatGPT does not load SKILL.md from disk. Point it at `https://mcp.sugra.ai/mcp`.
+
+From a local clone, pass the clone path to `marketplace add` instead of `Sugra-Systems/sugra-api-skills`.
 
 ## Local check
 

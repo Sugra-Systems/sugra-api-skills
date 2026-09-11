@@ -12,6 +12,8 @@ Sugra API is intelligence infrastructure: one HTTP API, one key, seven product d
 
 The surface is LLM-friendly: one `x-api-key`, one JSON envelope `{data, meta}` on every direction, MCP as the agent-native entry. Documentation truth is https://docs.sugra.ai (search and Ask AI). This skill is a map, not the catalog.
 
+These files are English. Reply in the user's language.
+
 Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: skill `live-docs`.
 
 ## Two complete ways in
