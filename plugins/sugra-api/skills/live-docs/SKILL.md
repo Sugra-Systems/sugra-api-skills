@@ -1,53 +1,55 @@
 ---
 name: live-docs
-description: Find current Sugra API documentation, OpenAPI, source list, MCP tool list, and live counts. Use before inventing a path, quoting an endpoint count, or when a skill might be stale.
+description: Find current Sugra documentation. Use when an endpoint, parameter, count, or version might be stale. Canonical docs are https://docs.sugra.ai (search and Ask AI). Also OpenAPI, /sources, /stats, the blog, and MCP tools/list.
+license: MIT
+metadata:
+  author: Sugra Systems, Inc.
 ---
 
 # Live docs
 
-This skill pack is a map. It is not the catalog. Paths, parameters, tool counts, and package version change. Fetch live documents. Do not quote numbers from memory.
+https://docs.sugra.ai is the external documentation truth. It has search and Ask AI. Per-endpoint parameters, schemas, and examples live in its API Reference sidebar. This skill pack does not copy that catalog.
 
-## Always-current (no key)
+Entry on the API host: https://sugra.ai/docs (same site). Do not use `https://sugra.ai/doc`.
 
-Fetch these from `https://sugra.ai` when the question is "what exists now":
+## How to read docs.sugra.ai
 
-| URL | What it is |
+1. Open https://docs.sugra.ai (Welcome: directions, key, envelope, plans, MCP).
+2. Search the docs site, or use Ask AI, for the operation or topic.
+3. Open the endpoint page in API Reference before calling. Confirm method, path, parameters, and body.
+4. If a page offers a Markdown view or `.md` URL, prefer that for a compact read.
+
+Do not invent a path. Do not treat this SKILL.md, a README, or a cookbook recipe as the operation list.
+
+## Machine companions (not a second docs site)
+
+| URL | Role |
 |---|---|
-| `GET /health` | liveness |
-| `GET /about` | product surface |
-| `GET /services` | service list |
-| `GET /sources` | source families, named under copy rules |
-| `GET /openapi.json` | full HTTP operations, parameters, bodies |
-| `GET /stats` | live endpoint / source / domain counts |
+| `GET https://sugra.ai/openapi.json` | HTTP contract for the call |
+| `GET https://sugra.ai/sources` | live source families |
+| `GET https://sugra.ai/services` | service list |
+| `GET https://sugra.ai/about` | product surface |
+| `GET https://sugra.ai/health` | liveness |
+| `GET https://sugra.ai/stats` | live counts |
 
-Public copy still uses hedges (1,500+ / 160+ / 36). `/stats` is the live counter. Do not equate `/stats` with the MCP bundled catalog (the wheel can lag a few operations).
+Public copy still uses hedges (1,500+ / 160+ / 36). `/stats` is the live counter. The MCP wheel catalog can lag OpenAPI. If MCP search misses, search docs.sugra.ai, then OpenAPI, then say whether the operation exists.
 
-## HTTP vs MCP catalogs
+MCP after connect: `initialize` (`serverInfo.version`), `tools/list`, `prompts/list`, `resources/list`.
 
-- HTTP: live OpenAPI is the map. A miss on OpenAPI is a miss on the API.
-- MCP: `search_endpoints` / `list_toolsets` / `list_sources` read a catalog bundled in the package. Hosted MCP tracks git main of `sugra-api-mcp`. A PyPI stdio install is whatever version was tagged. If MCP search misses, fetch `/openapi.json` before saying Sugra has no data.
-
-MCP live surface after connect: `initialize` (`serverInfo.version`), `tools/list`, `prompts/list`, `resources/list`. Resources include `sugra://catalog/domains`, `sugra://catalog/sources`, `sugra://attribution`, `sugra://skills/...`.
-
-## Human docs and code
+## Other public surfaces (search these, not the open web first)
 
 | Where | What |
 |---|---|
 | https://sugra.ai | product |
+| https://sugra.systems | company, legal, API marketing, direction pages |
+| https://sugra.systems/blog | blog index; article also as `/{slug}.md`; `llms.txt` |
 | https://app.sugra.ai | keys, billing, playground |
 | https://app.sugra.ai/settings/billing | issue a key |
-| https://sugra.systems | company, legal |
-| https://docs.sugra.ai | documentation |
 | https://pypi.org/project/sugra-api-mcp/ | MCP package version |
-| https://github.com/Sugra-Systems/sugra-api-mcp | MCP server, `FACTS.md`, README, self-hosting |
-| https://github.com/Sugra-Systems/sugra-api-cookbook | runnable HTTP recipes |
+| https://github.com/Sugra-Systems/sugra-api-mcp | MCP server |
+| https://github.com/Sugra-Systems/sugra-api-cookbook | HTTP recipes |
 | https://github.com/Sugra-Systems/openbb-sugra | OpenBB provider |
-| https://github.com/Sugra-Systems/sugra-api-skills | this skill pack (after publish) |
 
-Legal: https://sugra.systems/terms-of-service, `/privacy-policy`, `/data-use-policy`, `/acceptable-use-policy`, `/data-processing-agreement`, `/service-level-agreement`. Contacts: `support@`, `legal@`, `privacy@`, `abuse@` sugra.systems.
+Legal: https://sugra.systems/terms-of-service and sibling policy pages. Contacts: `support@`, `legal@`, `privacy@`, `abuse@` sugra.systems.
 
-## Do not
-
-- Do not invent a path or `operation_id`.
-- Do not treat a stale README, cookbook, or this SKILL.md as the operation list.
-- Do not name commercial upstreams. Use Sugra wrappers or the live `/sources` document.
+Source names: live `/sources`. Sovereign, intergovernmental, and academic names are open. Commercial upstreams appear as Sugra Finance, Sugra News, Sugra Crypto, Sugra Forex, Sugra Weather.

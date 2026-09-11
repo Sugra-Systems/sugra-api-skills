@@ -1,0 +1,16 @@
+{
+  "name": "sugra-api-skills",
+  "interface": {
+    "displayName": "Sugra API"
+  },
+  "plugins": [
+    {
+      "name": "sugra-api",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sugra-api"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

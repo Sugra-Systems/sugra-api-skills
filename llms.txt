@@ -1,0 +1,24 @@
+# sugra-api-skills
+
+Official Sugra API Agent Skills. HTTPS and MCP. Documentation truth: https://docs.sugra.ai (search and Ask AI).
+
+This repository is not the MCP server and not the HTTP cookbook.
+
+## Skills
+
+- plugins/sugra-api/skills/using-sugra-api/SKILL.md
+- plugins/sugra-api/skills/live-docs/SKILL.md
+- plugins/sugra-api/skills/connect/SKILL.md
+- plugins/sugra-api/skills/auth-and-quota/SKILL.md
+- plugins/sugra-api/skills/discover-and-call/SKILL.md
+- plugins/sugra-api/skills/envelope-and-attribution/SKILL.md
+- plugins/sugra-api/skills/cross-domain-briefing/SKILL.md
+
+## Live documentation
+
+- https://docs.sugra.ai
+- https://sugra.ai/docs (entry)
+- https://sugra.ai/openapi.json
+- https://sugra.ai/sources
+- https://sugra.ai/stats
+- https://sugra.systems/blog

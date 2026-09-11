@@ -1,43 +1,47 @@
 ---
 name: using-sugra-api
-description: Work with the Sugra API from any agent over HTTPS or MCP. Use when the task needs data from markets, macro, entities, news, climate, maritime, government, or network. Start here for the map of surfaces, then connect, discover, and call.
+description: Work with the Sugra API over HTTPS and MCP. Use when the task needs Sugra data, a key, product directions (Finance, Macro, Entity, Net Atlas, News, Earth, Research), or which skill to load next.
+license: MIT
+metadata:
+  author: Sugra Systems, Inc.
 ---
 
 # Using the Sugra API
 
-Sugra API is intelligence infrastructure. One product, two complete ways in. Domain-agnostic. Do not frame it through one vertical.
+Sugra API is intelligence infrastructure: one HTTP API, one key, seven product directions. Domain-agnostic. Do not frame it through one vertical.
 
-Public hedge (do not treat as a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: `GET https://sugra.ai/stats` and skill `live-docs`.
+The surface is LLM-friendly: one `x-api-key`, one JSON envelope `{data, meta}` on every direction, MCP as the agent-native entry. Documentation truth is https://docs.sugra.ai (search and Ask AI). This skill is a map, not the catalog.
 
-## Two complete surfaces
+Public hedge (not a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: skill `live-docs`.
 
-| Surface | When it is the right tool | How |
+## Two complete ways in
+
+| Surface | When | How |
 |---|---|---|
-| HTTPS API `https://sugra.ai` | The agent can GET/POST a URL | `x-api-key` on `/api/v1/...` |
-| MCP | The host is an MCP client (ChatGPT, claude.ai, Claude Desktop, Claude Code, Cursor, Gemini CLI, VS Code, Grok, ...) | hosted `https://mcp.sugra.ai/mcp` or local `sugra-api-mcp` |
+| HTTPS `https://sugra.ai` | The agent can GET/POST | `x-api-key` on `/api/v1/...` |
+| MCP | The host is an MCP client | hosted `https://mcp.sugra.ai/mcp` or local `sugra-api-mcp` |
 
-Both reach the same API. Both need a key from https://app.sugra.ai/settings/billing (Free: 50 requests/day). Do not log the key. Do not put it in a skill file, commit, or chat.
+Both reach the same API. Use the surface the host already has, or the one the user named. Key: https://app.sugra.ai/settings/billing (Free: 50 requests/day). Do not log the key.
 
-Use the surface the host already has. If the host can do HTTP, use HTTP. If the host is already an MCP client, use MCP. If the user named one, use that one. Do not add MCP to skip HTTP, and do not skip MCP when it is already connected.
+## Seven directions (one key, one budget)
+
+| Direction | Coverage |
+|---|---|
+| Sugra Finance | Equities, fundamentals, filings, fixed income, derivatives, crypto, forex |
+| Sugra Macro | Central banks, national statistics, FRED, IMF, World Bank, OECD |
+| Sugra Entity | Company resolution, sanctions and watchlist screening, identifiers |
+| Sugra Net Atlas | Internet infrastructure: ASNs, prefixes, IXPs, routing, DNS |
+| Sugra News | Global news flow and event signals |
+| Sugra Earth | Weather, hazards, energy, transport, air quality, climate |
+| Sugra Research | Scientific, patent, and academic datasets |
 
 ## Skill map
 
 | Need | Skill |
 |---|---|
-| Where live docs and counts live | `live-docs` |
-| How to attach HTTP, hosted MCP, stdio, self-host, each client | `connect` |
+| Live docs, search, Ask AI, sources, blog | `live-docs` |
+| Attach HTTP, hosted MCP, stdio, self-host, each client | `connect` |
 | Key, plans, 401/429, Bearer vs `x-api-key` | `auth-and-quota` |
-| Find an operation and call it (HTTP and MCP) | `discover-and-call` |
-| `{data, meta}`, sources, clocks, MCP shaping | `envelope-and-attribution` |
-| Two or three domains in one answer | `cross-domain-briefing` |
-
-## Minimal examples
-
-HTTP:
-
-```
-GET https://sugra.ai/api/v1/etf/sectors/relative-strength?window=1m
-x-api-key: sugra_...
-```
-
-MCP (after connect): `search_endpoints` then `describe_endpoint` then `call_endpoint` (or `fetch_data` for a one-shot). Hosted also has `resolve_entity`, `get_snapshot`, `get_timeseries`. Stdio does not.
+| Find and call an operation (HTTP and MCP) | `discover-and-call` |
+| Envelope, sources, clocks, MCP shaping | `envelope-and-attribution` |
+| Two or three directions in one answer | `cross-domain-briefing` |

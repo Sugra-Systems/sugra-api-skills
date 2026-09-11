@@ -1,8 +1,9 @@
 .claude/
 .codex/
 .Codex/
-.agents/
 .grok/
+.agents/skills/
+.agents/commands/
 __pycache__/
 .pytest_cache/
 .DS_Store
