@@ -177,6 +177,12 @@ def main() -> None:
     for client in ("Claude", "Grok", "Codex", "Cursor", "Gemini", "ChatGPT"):
         if client not in readme:
             fail(f"README must name {client}")
+    if "pip install sugra-api-mcp" not in readme:
+        fail("README must show pip install sugra-api-mcp")
+    if "1.0.0" not in readme:
+        fail("README must show pack version 1.0.0")
+    if "LLM-ready envelope" not in readme:
+        fail("README must state the product pitch")
     print("ok", len(EXPECTED), "skills")
 
 
