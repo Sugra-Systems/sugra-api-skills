@@ -174,6 +174,9 @@ def main() -> None:
         fail("README must name the public GitHub path")
     if "Not on GitHub yet" in readme:
         fail("README still says the pack is unpublished")
+    for client in ("Claude", "Grok", "Codex", "Cursor", "Gemini", "ChatGPT"):
+        if client not in readme:
+            fail(f"README must name {client}")
     print("ok", len(EXPECTED), "skills")
 
 
