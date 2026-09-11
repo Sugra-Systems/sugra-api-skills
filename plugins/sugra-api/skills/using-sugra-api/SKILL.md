@@ -1,42 +1,43 @@
 ---
 name: using-sugra-api
-description: Call the Sugra API over HTTPS from any agent. Use when the task needs live data from markets, macro, entities, news, climate, maritime, or government. Default path is HTTP to sugra.ai. MCP is optional.
+description: Work with the Sugra API from any agent over HTTPS or MCP. Use when the task needs data from markets, macro, entities, news, climate, maritime, government, or network. Start here for the map of surfaces, then connect, discover, and call.
 ---
 
 # Using the Sugra API
 
-Sugra API is intelligence infrastructure. One HTTPS API, one key, 1,500+ endpoints across 160+ primary sources and 36 domains. Domain-agnostic. Do not frame it through one vertical.
+Sugra API is intelligence infrastructure. One product, two complete ways in. Domain-agnostic. Do not frame it through one vertical.
 
-The default way to use it is a direct HTTP call. Any agent that can GET/POST a URL can use Sugra. Do not add an MCP server unless the client cannot call HTTPS (ChatGPT connector UI) or the user already asked for MCP.
+Public hedge (do not treat as a live count): 1,500+ endpoints, 160+ primary sources, 36 domains. Live counts: `GET https://sugra.ai/stats` and skill `live-docs`.
 
-## Base URL and key
+## Two complete surfaces
 
-- Base: `https://sugra.ai`
-- Data calls: `https://sugra.ai/api/v1/...`
-- Header: `x-api-key: sugra_...`
-- Free key: https://app.sugra.ai/settings/billing (50 requests/day)
+| Surface | When it is the right tool | How |
+|---|---|---|
+| HTTPS API `https://sugra.ai` | The agent can GET/POST a URL | `x-api-key` on `/api/v1/...` |
+| MCP | The host is an MCP client (ChatGPT, claude.ai, Claude Desktop, Claude Code, Cursor, Gemini CLI, VS Code, Grok, ...) | hosted `https://mcp.sugra.ai/mcp` or local `sugra-api-mcp` |
 
-Do not log the key. Do not put it in a skill file, commit, or chat.
+Both reach the same API. Both need a key from https://app.sugra.ai/settings/billing (Free: 50 requests/day). Do not log the key. Do not put it in a skill file, commit, or chat.
 
-## Public system endpoints (no key)
+Use the surface the host already has. If the host can do HTTP, use HTTP. If the host is already an MCP client, use MCP. If the user named one, use that one. Do not add MCP to skip HTTP, and do not skip MCP when it is already connected.
 
-| Path | What it is |
+## Skill map
+
+| Need | Skill |
 |---|---|
-| `GET /health` | liveness |
-| `GET /about` | product surface |
-| `GET /services` | service list |
-| `GET /sources` | source families |
-| `GET /openapi.json` | full operation list |
+| Where live docs and counts live | `live-docs` |
+| How to attach HTTP, hosted MCP, stdio, self-host, each client | `connect` |
+| Key, plans, 401/429, Bearer vs `x-api-key` | `auth-and-quota` |
+| Find an operation and call it (HTTP and MCP) | `discover-and-call` |
+| `{data, meta}`, sources, clocks, MCP shaping | `envelope-and-attribution` |
+| Two or three domains in one answer | `cross-domain-briefing` |
 
-## First data call
+## Minimal examples
+
+HTTP:
 
 ```
 GET https://sugra.ai/api/v1/etf/sectors/relative-strength?window=1m
 x-api-key: sugra_...
 ```
 
-Parse `{data, meta}`. Cite `meta` (source and `data_time`). Read quota headers. Details: skills `discover-and-call`, `auth-and-quota`, `envelope-and-attribution`.
-
-## When MCP is the right tool
-
-Only if the host cannot call HTTPS itself, or the user already connected `https://mcp.sugra.ai/mcp`. Then read skill `mcp-connector`. Otherwise stay on HTTP.
+MCP (after connect): `search_endpoints` then `describe_endpoint` then `call_endpoint` (or `fetch_data` for a one-shot). Hosted also has `resolve_entity`, `get_snapshot`, `get_timeseries`. Stdio does not.

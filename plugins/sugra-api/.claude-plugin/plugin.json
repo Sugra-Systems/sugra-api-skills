@@ -1,7 +1,7 @@
 {
   "name": "sugra-api",
   "displayName": "Sugra API",
-  "description": "Call the Sugra API from any agent over HTTPS. Discover endpoints, authenticate, cite sources. MCP is an optional connector, not the default path.",
+  "description": "Work with the Sugra API over HTTPS and MCP. Connect any client, read live docs, discover operations, authenticate, cite sources.",
   "author": {
     "name": "Sugra Systems, Inc.",
     "email": "support@sugra.systems",

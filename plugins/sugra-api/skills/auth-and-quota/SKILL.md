@@ -1,21 +1,13 @@
 ---
 name: auth-and-quota
-description: Authenticate to Sugra API and stay inside the daily request quota. Use when setting up a client, or when a call returns 401, 403, or 429.
+description: Authenticate to Sugra over HTTPS and MCP and stay inside the daily request quota. Use when setting up a client, or when a call returns 401, 403, missing_api_key, missing_bearer_token, or 429.
 ---
 
 # Auth and quota
 
-## HTTP (default)
+One key. Two header shapes. Volume gating only: every plan sees every endpoint.
 
-Every data endpoint takes the key in a header:
-
-```
-x-api-key: sugra_...
-```
-
-Not `Authorization: Bearer` on `https://sugra.ai`. Bearer is only for the hosted MCP connector.
-
-Get a key at https://app.sugra.ai/settings/billing. Every plan sees every endpoint. Gating is volume, not surface.
+Issue a key at https://app.sugra.ai/settings/billing. Prefix `sugra_...`. Do not log it. Do not put it in a skill file, commit, or chat.
 
 | Plan | Requests / day |
 |---|---|
@@ -23,9 +15,19 @@ Get a key at https://app.sugra.ai/settings/billing. Every plan sees every endpoi
 | Dev | 5,000 |
 | Pro | 50,000 |
 
-Some bulk endpoints cost more than 1 request. The response header `X-RateLimit-Cost` is that cost.
+Some bulk endpoints cost more than 1 request. HTTP reports that as `X-RateLimit-Cost`. MCP `describe_endpoint` `agent_hints.bulk_cost` warns before the call.
 
-## Headers on every data response
+## HTTPS API
+
+Header on every data call:
+
+```
+x-api-key: sugra_...
+```
+
+Not `Authorization: Bearer` on `https://sugra.ai`.
+
+Every data response also carries:
 
 | Header | Meaning |
 |---|---|
@@ -34,17 +36,29 @@ Some bulk endpoints cost more than 1 request. The response header `X-RateLimit-C
 | `X-RateLimit-Reset` | when the window resets (UTC) |
 | `X-RateLimit-Cost` | cost of this call |
 
+## MCP
+
+| Transport | Client auth | Process env |
+|---|---|---|
+| Hosted `https://mcp.sugra.ai/mcp` | `Authorization: Bearer` (raw key or OAuth JWT) | n/a |
+| Local stdio | none on the wire | `SUGRA_API_KEY` in the server process |
+| Self-hosted HTTP | client Bearer; process `SUGRA_API_KEY` is only a downstream fallback | |
+
+OAuth JWT: audience `https://app.sugra.ai/mcp` on both MCP hosts, scope `sugra:read`.
+
+Hosted discovery is public. `tools/call` and `resources/read` return 401 `missing_bearer_token` without Bearer.
+
+Stdio catalog tools (`search_endpoints`, `describe_endpoint`, `list_toolsets`, `list_sources`) work without a key. `call_endpoint`, `fetch_data`, and the entity tools return structured `missing_api_key` until `SUGRA_API_KEY` is set.
+
+MCP tool JSON does not forward `X-RateLimit-*`. On 429 wait for `retry_after` (seconds). `elapsed_ms` says which timeout fired. Downstream MCP still calls the API with `x-api-key`.
+
 ## Errors
 
-| Status | Meaning | What to do |
+| Signal | Meaning | What to do |
 |---|---|---|
-| 401 | missing or invalid key | stop. Do not retry the same call. |
-| 403 | key cannot use this route | stop. |
-| 429 | daily quota exhausted | wait until `X-RateLimit-Reset`. Do not spin. |
-| 5xx | upstream or platform fault | retry once with backoff. Then report. |
+| HTTP 401 / MCP `missing_api_key` / `missing_bearer_token` | missing or invalid credential | stop. Do not retry the same call. |
+| HTTP 403 | key cannot use this route | stop. |
+| HTTP 429 / MCP 429 | quota exhausted | wait until `X-RateLimit-Reset` or `retry_after`. Do not spin. |
+| HTTP 5xx / MCP `upstream_*` | platform or upstream fault | retry once with backoff. Then report. |
 
 Do not retry 4xx except 429 after the reset.
-
-## MCP (only if already connected)
-
-Hosted MCP (`https://mcp.sugra.ai/mcp`) uses `Authorization: Bearer` (raw key or OAuth JWT, audience `https://app.sugra.ai/mcp`). The MCP tool envelope does not forward `X-RateLimit-*`. On 429 wait for JSON `retry_after` (seconds). Downstream calls from MCP still use `x-api-key`.

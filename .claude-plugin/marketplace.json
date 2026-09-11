@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "sugra-api-skills",
-  "description": "Official Sugra API skills: call https://sugra.ai over HTTPS. MCP is optional.",
+  "description": "Official Sugra API skills: HTTPS and MCP. Live docs, every connection method, discover and call.",
   "owner": {
     "name": "Sugra Systems, Inc.",
     "email": "support@sugra.systems",
@@ -11,7 +11,7 @@
     {
       "name": "sugra-api",
       "source": "./plugins/sugra-api",
-      "description": "Call the Sugra API from any agent over HTTPS. Discover endpoints, authenticate, cite sources. MCP is an optional connector, not the default path.",
+      "description": "Work with the Sugra API over HTTPS and MCP. Connect any client, read live docs, discover operations, authenticate, cite sources.",
       "author": {
         "name": "Sugra Systems, Inc.",
         "email": "support@sugra.systems"

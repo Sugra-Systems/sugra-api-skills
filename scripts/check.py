@@ -12,11 +12,12 @@ PLUGIN = ROOT / "plugins" / "sugra-api"
 SKILLS = PLUGIN / "skills"
 EXPECTED = (
     "using-sugra-api",
+    "live-docs",
+    "connect",
     "auth-and-quota",
     "discover-and-call",
     "envelope-and-attribution",
     "cross-domain-briefing",
-    "mcp-connector",
 )
 FRONTMATTER_RE = re.compile(
     r"^---\nname: (?P<name>[^\n]+)\ndescription: (?P<description>.+)\n---\n",
@@ -74,12 +75,24 @@ def main() -> None:
     using = (SKILLS / "using-sugra-api" / "SKILL.md").read_text(encoding="utf-8")
     if "x-api-key" not in using or "https://sugra.ai" not in using:
         fail("using-sugra-api must teach HTTPS and x-api-key")
-    if "search_endpoints" in using:
-        fail("using-sugra-api must not lead with MCP tools")
+    if "mcp.sugra.ai" not in using:
+        fail("using-sugra-api must teach hosted MCP")
+
+    docs = (SKILLS / "live-docs" / "SKILL.md").read_text(encoding="utf-8")
+    for needle in ("/openapi.json", "/sources", "/stats", "tools/list"):
+        if needle not in docs:
+            fail(f"live-docs must mention {needle}")
+
+    connect = (SKILLS / "connect" / "SKILL.md").read_text(encoding="utf-8")
+    for needle in ("x-api-key", "mcp.sugra.ai", "sugra-api-mcp", "Claude Desktop", "ChatGPT"):
+        if needle not in connect:
+            fail(f"connect must mention {needle}")
 
     discover = (SKILLS / "discover-and-call" / "SKILL.md").read_text(encoding="utf-8")
     if "/openapi.json" not in discover:
         fail("discover-and-call must point at live OpenAPI")
+    if "search_endpoints" not in discover or "call_endpoint" not in discover:
+        fail("discover-and-call must teach the MCP loop")
 
     plugin = json.loads((PLUGIN / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
     claude = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
