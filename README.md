@@ -95,4 +95,4 @@ python scripts/check.py
 
 ## License
 
-MIT. Data from each endpoint carries its own upstream terms. See https://sugra.ai/sources and per-response `meta`.
+MIT. Data from each endpoint carries its own upstream terms.
