@@ -2,8 +2,6 @@
 name: auth-and-quota
 description: Authenticate to Sugra over HTTPS and MCP and stay inside the daily quota. Use when setting up a client or when a call returns 401, 403, missing_api_key, missing_bearer_token, or 429.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Auth and quota

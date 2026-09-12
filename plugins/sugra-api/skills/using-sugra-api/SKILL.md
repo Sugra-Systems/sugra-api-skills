@@ -2,8 +2,6 @@
 name: using-sugra-api
 description: Work with the Sugra API over HTTPS and MCP. Use when the task needs Sugra data, a key, product directions (Finance, Macro, Entity, Net Atlas, News, Earth, Research), or which skill to load next.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Using the Sugra API

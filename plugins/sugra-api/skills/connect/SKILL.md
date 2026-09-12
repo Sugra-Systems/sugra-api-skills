@@ -2,8 +2,6 @@
 name: connect
 description: Attach a client to Sugra over HTTPS or MCP. Use when setting up Claude Desktop, Claude Code, ChatGPT, claude.ai, Cursor, VS Code, Gemini CLI, Grok, OpenBB, a custom HTTP agent, or self-hosted MCP.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Connect
