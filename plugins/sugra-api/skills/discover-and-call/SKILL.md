@@ -32,7 +32,7 @@ Works on hosted (11 tools) and stdio (8 tools). Do not call hosted-only names on
 
 `fetch_data(query=...)` is a one-shot. If it misses, use the four-step loop. `list_toolsets` and `list_sources` (resources `sugra://catalog/domains`, `sugra://catalog/sources`) are the map, not the query.
 
-Shaping on `call_endpoint` / `fetch_data`: `limit`, `fields` (dotted paths), `include_raw`. They apply to the records list, which on the hosted server includes the one list inside an object `data`, such as `data.items`. `meta.shaped` reports what applied, and its `records_path` names the list.
+Shaping on `call_endpoint` / `fetch_data`: `limit` bounds the records list, `fields` (dotted paths) projects each record, and `include_raw` attaches the complete original payload under `raw` when it fits the size cap. On the hosted server the records list can also be the one list inside an object `data`, when exactly one of `data`, `entries`, `events`, `history`, `items`, `observations`, `points`, `records`, `results`, `rows`, `series`, `timeseries` holds a list (for example `data.items`). There, a `fields` entry that names a key of `data` itself projects `data` instead, a projection that matches nothing removes nothing, and `meta.shaped.records_path` names the list used. Stdio packages up to 0.12.0 apply `limit` and `fields` only to a `data` list, a bare array or the keys of `data` itself, and report no `records_path`. `meta.shaped` reports what applied.
 
 Hosted only: `resolve_entity`, `get_snapshot`, `get_timeseries`. LEI/VAT and sanctions on every transport: `sugra_entity_lookup`, `sugra_entity_screen`.
 
