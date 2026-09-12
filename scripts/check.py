@@ -145,7 +145,7 @@ def main() -> None:
         fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
     if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if portable.get("version") != "1.0.0" or claude_plugin.get("version") != "1.0.0":
+    if portable.get("version") != "1.0.1" or claude_plugin.get("version") != "1.0.1":
         fail("plugin version")
     if portable.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
         fail("portable plugin.json must declare Agent Plugins schema")
@@ -206,8 +206,8 @@ def main() -> None:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:
         fail("README must show pip install sugra-api-mcp")
-    if "1.0.0" not in readme:
-        fail("README must show pack version 1.0.0")
+    if "1.0.1" not in readme:
+        fail("README must show pack version 1.0.1")
     if "LLM-ready envelope" not in readme:
         fail("README must state the product pitch")
     print("ok", len(EXPECTED), "skills")
