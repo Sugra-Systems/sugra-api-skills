@@ -25,9 +25,9 @@
         "privacyPolicyURL": "https://sugra.systems/privacy-policy",
         "termsOfServiceURL": "https://sugra.systems/terms-of-service",
         "defaultPrompt": [
-          "Call Sugra over HTTPS with x-api-key",
-          "Attach hosted MCP at https://mcp.sugra.ai/mcp",
-          "Look up a live endpoint on docs.sugra.ai then call it"
+          "What can Sugra API do, and which endpoints need no key?",
+          "Where do I get a Sugra key, and how do I use it without pasting it in chat?",
+          "Look up an endpoint on docs.sugra.ai"
         ],
         "brandColor": "#F5A623",
         "composerIcon": "./assets/logo.png",
