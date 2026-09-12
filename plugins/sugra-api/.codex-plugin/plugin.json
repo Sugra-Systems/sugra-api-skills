@@ -14,6 +14,16 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Sugra API",
-    "shortDescription": "HTTPS and MCP skills for the Sugra API. Docs: docs.sugra.ai."
+    "shortDescription": "HTTPS and MCP skills for the Sugra API. Docs: docs.sugra.ai.",
+    "longDescription": "Work with the Sugra API over HTTPS and MCP. One key, seven product directions. Documentation truth is https://docs.sugra.ai (search and Ask AI).",
+    "developerName": "Sugra Systems, Inc.",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "websiteURL": "https://sugra.ai",
+    "privacyPolicyURL": "https://sugra.systems/privacy-policy",
+    "termsOfServiceURL": "https://sugra.systems/terms-of-service",
+    "brandColor": "#F5A623",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
   }
 }

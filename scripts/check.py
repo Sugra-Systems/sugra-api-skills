@@ -24,8 +24,6 @@ FRONTMATTER_RE = re.compile(
     r"name: (?P<name>[^\n]+)\n"
     r"description: (?P<description>.+)\n"
     r"license: MIT\n"
-    r"metadata:\n"
-    r"  author: Sugra Systems, Inc.\n"
     r"---\n",
     re.DOTALL,
 )
@@ -84,7 +82,16 @@ def main() -> None:
         text = path.read_text(encoding="utf-8")
         match = FRONTMATTER_RE.match(text)
         if not match:
-            fail(f"{slug}: frontmatter must be name, description, license MIT, metadata.author")
+            fail(f"{slug}: frontmatter must be name, description, license MIT")
+        if "metadata:" in text.split("---", 2)[1]:
+            fail(f"{slug}: put skill interface in agents/openai.yaml, not SKILL.md metadata")
+        yaml_path = SKILLS / slug / "agents" / "openai.yaml"
+        if not yaml_path.is_file():
+            fail(f"{slug}: missing agents/openai.yaml")
+        yaml_text = yaml_path.read_text(encoding="utf-8")
+        if "interface:" not in yaml_text or "display_name:" not in yaml_text:
+            fail(f"{slug}: agents/openai.yaml must declare interface.display_name")
+        copy_lint(yaml_text, str(yaml_path.relative_to(ROOT)))
         if match.group("name") != slug:
             fail(f"{slug}: frontmatter name {match.group('name')!r}")
         description = match.group("description").strip()
@@ -142,6 +149,14 @@ def main() -> None:
         fail("plugin homepage must be docs.sugra.ai")
     if claude_plugin.get("skills") not in ("./skills", "./skills/"):
         fail("claude plugin skills path")
+    logo = PLUGIN / "assets" / "logo.png"
+    if not logo.is_file():
+        fail("plugin assets/logo.png missing")
+    iface = codex_plugin.get("interface") or {}
+    if iface.get("composerIcon") != "./assets/logo.png":
+        fail("codex plugin composerIcon")
+    if iface.get("logo") != "./assets/logo.png":
+        fail("codex plugin logo")
     if "user's language" not in using:
         fail("using-sugra-api must tell the agent to match the user's language")
     if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":

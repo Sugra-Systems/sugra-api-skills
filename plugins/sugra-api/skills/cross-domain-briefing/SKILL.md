@@ -2,8 +2,6 @@
 name: cross-domain-briefing
 description: Compose one briefing from two or three Sugra directions over HTTPS or MCP. Use when a question spans Finance, Macro, Entity, Net Atlas, News, Earth, or Research and one operation is not enough.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Cross-domain briefing

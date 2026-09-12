@@ -2,8 +2,6 @@
 name: envelope-and-attribution
 description: Parse Sugra API payloads over HTTPS or MCP, keep source attribution, and tell observation time from request time. Use when reading a response, citing a figure, or shaping a large payload.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Envelope and attribution

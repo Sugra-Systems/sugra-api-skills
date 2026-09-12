@@ -2,8 +2,6 @@
 name: live-docs
 description: Find current Sugra documentation. Use when an endpoint, parameter, count, or version might be stale. Canonical docs are https://docs.sugra.ai (search and Ask AI). Also OpenAPI, /sources, /stats, the blog, and MCP tools/list.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Live docs

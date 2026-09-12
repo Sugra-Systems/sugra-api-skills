@@ -2,8 +2,6 @@
 name: discover-and-call
 description: Find the right Sugra operation and call it over HTTPS or MCP. Use when the path or operation_id is unknown, before guessing parameters, or after a catalog miss. Confirm details on https://docs.sugra.ai. Do not invent routes.
 license: MIT
-metadata:
-  author: Sugra Systems, Inc.
 ---
 
 # Discover and call
