@@ -26,7 +26,7 @@ Some payloads are envelope-less (a flat object with `meta` or `_meta` on the sam
 
 HTTP: this JSON body plus `X-RateLimit-*` headers.
 
-MCP: `call_endpoint` / `fetch_data` return the same payload (a top-level array is wrapped as `{data: ...}`). Shaping args `limit`, `fields`, `include_raw` apply to `data`. `meta.shaped` reports `fields_applied`, `fields_unmatched`, `limit_applied`. `limit` bounds only the top-level list.
+MCP: `call_endpoint` / `fetch_data` return the same payload (a top-level array is wrapped as `{data: ...}`). `limit` and `fields` shape the records list in `data`, and lists nested inside records are never truncated; `include_raw` attaches the complete original payload under `raw` when it fits the size cap. An object `data` without a records list, or an envelope-less object, counts as one record for `fields`, and `meta` / `_meta` stay. On the hosted server a projection that matches nothing removes nothing, and the records list can also be the one list inside an object `data`, when exactly one of `data`, `entries`, `events`, `history`, `items`, `observations`, `points`, `records`, `results`, `rows`, `series`, `timeseries` holds a list. Keys beside that list, such as `total` and `count`, stay unless a `fields` entry names a key of `data` itself, which projects `data` as one record instead. Stdio packages up to 0.12.0 do not look inside an object `data` for a records list and can return empty records when no field matches. `meta.shaped` reports `fields_applied`, `fields_unmatched`, `limit_applied` and, on the hosted server, `records_path`.
 
 ## Time
 
