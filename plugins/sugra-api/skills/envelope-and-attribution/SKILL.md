@@ -26,7 +26,7 @@ Some payloads are envelope-less (a flat object with `meta` or `_meta` on the sam
 
 HTTP: this JSON body plus `X-RateLimit-*` headers.
 
-MCP: `call_endpoint` / `fetch_data` return the same payload (a top-level array is wrapped as `{data: ...}`). Shaping args `limit`, `fields`, `include_raw` apply to `data`. `meta.shaped` reports `fields_applied`, `fields_unmatched`, `limit_applied`. `limit` bounds only the top-level list.
+MCP: `call_endpoint` / `fetch_data` return the same payload (a top-level array is wrapped as `{data: ...}`). Shaping args `limit`, `fields`, `include_raw` apply to the records list in `data`. On the hosted server that includes the one list inside an object `data`, such as `items` or `observations`, and keys beside it such as `total` and `count` stay. `meta.shaped` reports `fields_applied`, `fields_unmatched`, `limit_applied` and, on the hosted server, `records_path`.
 
 ## Time
 

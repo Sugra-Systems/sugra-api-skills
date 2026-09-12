@@ -32,7 +32,7 @@ Works on hosted (11 tools) and stdio (8 tools). Do not call hosted-only names on
 
 `fetch_data(query=...)` is a one-shot. If it misses, use the four-step loop. `list_toolsets` and `list_sources` (resources `sugra://catalog/domains`, `sugra://catalog/sources`) are the map, not the query.
 
-Shaping on `call_endpoint` / `fetch_data`: `limit`, `fields` (dotted paths), `include_raw`. `limit` bounds only the top-level list. `meta.shaped` reports what applied.
+Shaping on `call_endpoint` / `fetch_data`: `limit`, `fields` (dotted paths), `include_raw`. They apply to the records list, which on the hosted server includes the one list inside an object `data`, such as `data.items`. `meta.shaped` reports what applied, and its `records_path` names the list.
 
 Hosted only: `resolve_entity`, `get_snapshot`, `get_timeseries`. LEI/VAT and sanctions on every transport: `sugra_entity_lookup`, `sugra_entity_screen`.
 
