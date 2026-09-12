@@ -25,7 +25,7 @@ Permanent alias: `https://app.sugra.ai/mcp`
 Auth: `Authorization: Bearer sugra_...` or OAuth (audience `https://app.sugra.ai/mcp`, scope `sugra:read`). Discovery is public. `tools/call` and `resources/read` need Bearer.
 
 claude.ai: Settings -> Connectors -> Add custom connector.
-ChatGPT: Settings -> Connectors -> Add MCP server. ChatGPT does not load SKILL.md from disk.
+ChatGPT: install skills from the Plugins Directory (https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef). Hosted MCP tools: Settings -> Connectors -> Add MCP server.
 
 Hosted tools: 8 gateway plus 3 composed (`resolve_entity`, `get_snapshot`, `get_timeseries`). Confirm with live `tools/list`.
 
@@ -59,6 +59,7 @@ Public extension `openbb-sugra` uses the HTTPS API, not MCP.
 | Host | Typical attach |
 |---|---|
 | Script, custom agent, OpenBB | HTTPS `x-api-key` |
-| ChatGPT, claude.ai | Hosted MCP connector |
+| ChatGPT | Plugins Directory listing plus hosted MCP |
+| claude.ai | Hosted MCP connector |
 | Claude Desktop / Code, Cursor, VS Code, Gemini CLI, Grok | stdio package or hosted MCP |
 | Own HTTP MCP process | self-host |

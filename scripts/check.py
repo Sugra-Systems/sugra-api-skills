@@ -197,6 +197,8 @@ def main() -> None:
         fail("README must point at docs.sugra.ai")
     if "Sugra-Systems/sugra-api-skills" not in readme:
         fail("README must name the public GitHub path")
+    if "chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef" not in readme:
+        fail("README must link the ChatGPT Plugins Directory listing")
     if "Not on GitHub yet" in readme:
         fail("README still says the pack is unpublished")
     for client in ("Claude", "Grok", "Codex", "Cursor", "Gemini", "ChatGPT"):

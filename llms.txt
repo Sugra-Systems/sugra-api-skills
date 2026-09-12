@@ -2,6 +2,8 @@
 
 Official Sugra API Agent Skills. HTTPS and MCP. Documentation truth: https://docs.sugra.ai (search and Ask AI).
 
+Published in ChatGPT / Codex Plugins Directory: https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef
+
 This repository is not the MCP server and not the HTTP cookbook.
 
 ## Skills
