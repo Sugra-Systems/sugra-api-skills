@@ -136,15 +136,21 @@ def main() -> None:
     if "search_endpoints" not in discover or "call_endpoint" not in discover:
         fail("discover-and-call must teach the MCP loop")
 
+    portable = load_json(PLUGIN / "plugin.json")
     claude_plugin = load_json(PLUGIN / ".claude-plugin" / "plugin.json")
     codex_plugin = load_json(PLUGIN / ".codex-plugin" / "plugin.json")
     claude_mkt = load_json(ROOT / ".claude-plugin" / "marketplace.json")
     grok_mkt = load_json(ROOT / ".grok-plugin" / "marketplace.json")
     agents_mkt = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
-    if claude_plugin["name"] != "sugra-api" or codex_plugin["name"] != "sugra-api":
+    if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api" or codex_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if claude_plugin.get("version") != "1.0.0" or codex_plugin.get("version") != "1.0.0":
+    if portable.get("version") != "1.0.0" or claude_plugin.get("version") != "1.0.0" or codex_plugin.get("version") != "1.0.0":
         fail("plugin version")
+    if portable.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
+        fail("portable plugin.json must declare Agent Plugins schema")
+    openai_iface = ((portable.get("extensions") or {}).get("com.openai") or {}).get("interface") or {}
+    if openai_iface.get("composerIcon") != "./assets/logo.png" or openai_iface.get("logo") != "./assets/logo.png":
+        fail("portable extensions.com.openai interface icons")
     if claude_plugin.get("homepage") != "https://docs.sugra.ai":
         fail("plugin homepage must be docs.sugra.ai")
     if claude_plugin.get("skills") not in ("./skills", "./skills/"):
@@ -170,6 +176,7 @@ def main() -> None:
     if agents_mkt["plugins"][0]["source"]["path"] != "./plugins/sugra-api":
         fail("codex marketplace source")
     for label, obj in (
+        ("portable plugin.json", portable),
         ("plugin.json", claude_plugin),
         ("codex plugin.json", codex_plugin),
         ("claude marketplace.json", claude_mkt),
@@ -180,6 +187,8 @@ def main() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
     llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
+    plugin_readme = (PLUGIN / "README.md").read_text(encoding="utf-8")
+    copy_lint(plugin_readme, "plugins/sugra-api/README.md")
     copy_lint(readme, "README.md")
     copy_lint(security, "SECURITY.md")
     copy_lint(llms, "llms.txt")
