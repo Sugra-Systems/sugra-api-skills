@@ -138,16 +138,19 @@ def main() -> None:
 
     portable = load_json(PLUGIN / "plugin.json")
     claude_plugin = load_json(PLUGIN / ".claude-plugin" / "plugin.json")
-    codex_plugin = load_json(PLUGIN / ".codex-plugin" / "plugin.json")
     claude_mkt = load_json(ROOT / ".claude-plugin" / "marketplace.json")
     grok_mkt = load_json(ROOT / ".grok-plugin" / "marketplace.json")
     agents_mkt = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
-    if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api" or codex_plugin["name"] != "sugra-api":
+    if (PLUGIN / ".codex-plugin").exists():
+        fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
+    if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if portable.get("version") != "1.0.0" or claude_plugin.get("version") != "1.0.0" or codex_plugin.get("version") != "1.0.0":
+    if portable.get("version") != "1.0.0" or claude_plugin.get("version") != "1.0.0":
         fail("plugin version")
     if portable.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
         fail("portable plugin.json must declare Agent Plugins schema")
+    if "skills" in portable:
+        fail("portable plugin.json must not declare skills; skills/ is discovered")
     openai_iface = ((portable.get("extensions") or {}).get("com.openai") or {}).get("interface") or {}
     if openai_iface.get("composerIcon") != "./assets/logo.png" or openai_iface.get("logo") != "./assets/logo.png":
         fail("portable extensions.com.openai interface icons")
@@ -158,11 +161,9 @@ def main() -> None:
     logo = PLUGIN / "assets" / "logo.png"
     if not logo.is_file():
         fail("plugin assets/logo.png missing")
-    iface = codex_plugin.get("interface") or {}
-    if iface.get("composerIcon") != "./assets/logo.png":
-        fail("codex plugin composerIcon")
-    if iface.get("logo") != "./assets/logo.png":
-        fail("codex plugin logo")
+    policy = agents_mkt["plugins"][0].get("policy") or {}
+    if policy.get("installation") != "AVAILABLE" or policy.get("authentication") != "ON_INSTALL":
+        fail("codex marketplace plugin policy")
     if "user's language" not in using:
         fail("using-sugra-api must tell the agent to match the user's language")
     if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
@@ -178,9 +179,9 @@ def main() -> None:
     for label, obj in (
         ("portable plugin.json", portable),
         ("plugin.json", claude_plugin),
-        ("codex plugin.json", codex_plugin),
         ("claude marketplace.json", claude_mkt),
         ("grok marketplace.json", grok_mkt),
+        ("codex marketplace.json", agents_mkt),
     ):
         copy_lint(json.dumps(obj), label)
 
