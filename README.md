@@ -5,12 +5,15 @@
 </p>
 
 <p align="center">
+  <a href="https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef"><img src="https://img.shields.io/badge/ChatGPT-Plugins_Directory-F5A623" alt="ChatGPT Plugins Directory"></a>
   <a href="https://github.com/Sugra-Systems/sugra-api-skills/releases"><img src="https://img.shields.io/badge/version-1.0.0-F5A623" alt="Version 1.0.0"></a>
   <a href="https://pypi.org/project/sugra-api-mcp/"><img src="https://img.shields.io/pypi/v/sugra-api-mcp?label=sugra-api-mcp&color=F5A623" alt="sugra-api-mcp on PyPI"></a>
   <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License" alt="License"></a>
 </p>
 
 Official [Sugra API](https://sugra.ai) skills for Claude, Grok, Codex, Cursor, Gemini, and ChatGPT.
+
+Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef).
 
 **Sugra API aggregates 36 domains across 160+ primary sources. 1,500+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/settings/billing).**
 
@@ -36,7 +39,17 @@ grok plugin marketplace add Sugra-Systems/sugra-api-skills
 grok plugin install sugra-api --trust
 ```
 
-### Codex
+### ChatGPT and Codex
+
+Listed in the Plugins Directory (Install plugin):
+
+```
+https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef
+```
+
+Codex also installs from the same directory via Plugins in the Codex app.
+
+From a clone, copy skills into Codex:
 
 ```
 cp -R plugins/sugra-api/skills/. ~/.agents/skills/
@@ -54,10 +67,9 @@ cp -R plugins/sugra-api/skills/. ~/.cursor/skills/
 cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
 ```
 
-### ChatGPT
+### Hosted MCP
 
 ```
-# hosted MCP connector; ChatGPT does not load SKILL.md
 https://mcp.sugra.ai/mcp
 ```
 
