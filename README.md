@@ -15,7 +15,9 @@ Official [Sugra API](https://sugra.ai) skills for Claude, Grok, Codex, Cursor, G
 
 Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef).
 
-**Sugra API aggregates 36 domains across 160+ primary sources. 1,500+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/settings/billing).**
+The Sugra API connector (hosted MCP) is published in Anthropic's Connectors Directory for Claude: [Sugra API](https://url.sugra.ai/claude). Connect it there, and install these skills from this repository on any platform below.
+
+**Sugra API aggregates 36 domains across 160+ primary sources. 1,600+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/settings/billing).**
 
 Seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). HTTPS and MCP are both complete paths.
 
@@ -72,6 +74,8 @@ cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
 ```
 https://mcp.sugra.ai/mcp
 ```
+
+In Claude, connect [Sugra API from Anthropic's Connectors Directory](https://url.sugra.ai/claude) instead of adding the URL by hand.
 
 ### MCP (local)
 
