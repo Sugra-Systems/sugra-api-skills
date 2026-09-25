@@ -145,8 +145,14 @@ def main() -> None:
         fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
     if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if portable.get("version") != "1.0.1" or claude_plugin.get("version") != "1.0.1":
+    if portable.get("version") != "1.1.0" or claude_plugin.get("version") != "1.1.0":
         fail("plugin version")
+    mcp_conf = load_json(PLUGIN / ".mcp.json")
+    sugra_mcp = ((mcp_conf.get("mcpServers") or {}).get("sugra-api") or {})
+    if sugra_mcp.get("type") != "http":
+        fail(".mcp.json sugra-api must set type http")
+    if sugra_mcp.get("url") != "https://app.sugra.ai/mcp":
+        fail(".mcp.json must use https://app.sugra.ai/mcp (same origin as the OpenAI MCP listing)")
     if portable.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
         fail("portable plugin.json must declare Agent Plugins schema")
     if "skills" in portable:
@@ -206,8 +212,12 @@ def main() -> None:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:
         fail("README must show pip install sugra-api-mcp")
-    if "1.0.1" not in readme:
-        fail("README must show pack version 1.0.1")
+    if "1.1.0" not in readme:
+        fail("README must show pack version 1.1.0")
+    if ".mcp.json" not in plugin_readme:
+        fail("plugin README must mention .mcp.json")
+    if "OpenAI directory zip" not in plugin_readme:
+        fail("plugin README must say the OpenAI zip omits .mcp.json")
     if "LLM-ready envelope" not in readme:
         fail("README must state the product pitch")
     print("ok", len(EXPECTED), "skills")
