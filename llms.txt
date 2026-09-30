@@ -10,13 +10,13 @@ This repository is not the MCP server and not the HTTP cookbook.
 
 ## Skills
 
-- plugins/sugra-api/skills/using-sugra-api/SKILL.md
-- plugins/sugra-api/skills/live-docs/SKILL.md
-- plugins/sugra-api/skills/connect/SKILL.md
-- plugins/sugra-api/skills/auth-and-quota/SKILL.md
-- plugins/sugra-api/skills/discover-and-call/SKILL.md
-- plugins/sugra-api/skills/envelope-and-attribution/SKILL.md
-- plugins/sugra-api/skills/cross-domain-briefing/SKILL.md
+- using-sugra-api/SKILL.md
+- live-docs/SKILL.md
+- connect/SKILL.md
+- auth-and-quota/SKILL.md
+- discover-and-call/SKILL.md
+- envelope-and-attribution/SKILL.md
+- cross-domain-briefing/SKILL.md
 
 ## Live documentation
 

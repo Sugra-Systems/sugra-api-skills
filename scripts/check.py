@@ -8,6 +8,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+# The skill folders at the repository root are the source. plugins/sugra-api is
+# the Claude package an open directory submission is bound to; it stays as it
+# is until that submission closes, and its copy of the skills is checked as-is.
 PLUGIN = ROOT / "plugins" / "sugra-api"
 SKILLS = PLUGIN / "skills"
 EXPECTED = (
@@ -38,6 +41,44 @@ TIER_C = (
     "cboe",
 )
 BANS = ("real-time", "realtime", "financial intelligence", "blackbox")
+# A tool count goes stale the day the server changes; name the tools instead.
+# A number, up to two qualifier words, then "tool" or "tools" - but not "tool
+# call", which counts calls, not tools. The rule reads the text with Markdown
+# code and emphasis marks removed. It is a guard over the phrasings a count
+# takes, not a parser of English.
+UNITS = "one|two|three|four|five|six|seven|eight|nine"
+TEENS = "ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen"
+TENS = "twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety"
+NUMBER = rf"(?:\d+|(?:{TENS})(?:[- ](?:{UNITS}))?|{TEENS}|{UNITS})"
+# words in one paragraph: spaces, or one line break, never a blank line
+GAP = r"(?:[ \t]+|[ \t]*\n[ \t]*)"
+TOOL_COUNT_RE = re.compile(
+    rf"\b{NUMBER}{GAP}(?:(?!of\b)[a-z-]+{GAP}){{0,2}}tools?\b(?!{GAP}calls?\b)",
+    re.IGNORECASE,
+)
+MARKDOWN_MARKS_RE = re.compile(r"[`*_~]")
+TOOL_COUNT_HITS = (
+    "one tool",
+    "11 tools",
+    "thirteen tools",
+    "twenty-one tools",
+    "three hosted gateway tools",
+    "two composed tools",
+    "`eight` tools",
+    "**3** tools",
+    "two *gateway* tools",
+    "_five_ tools",
+    "eight\ntools",
+)
+TOOL_COUNT_MISSES = (
+    "one tool call",
+    "two tool calls",
+    "two gateway transports",
+    "the gateway tools",
+    "a tool",
+    "one of the tools",
+    "--port 8001\n```\n\nGateway tools only",
+)
 DIRECTIONS = (
     "Sugra Finance",
     "Sugra Macro",
@@ -72,26 +113,38 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def main() -> None:
-    slugs = sorted(p.name for p in SKILLS.iterdir() if p.is_dir())
-    if tuple(slugs) != EXPECTED:
-        fail(f"skill folders {slugs} != {EXPECTED}")
+def check_skills(base: Path, source: bool) -> None:
+    """Check one set of the seven skills.
 
+    source=True is the repository root: no vendor files (agents/openai.yaml
+    belongs to the OpenAI package in sugra-api-plugins) and no tool counts.
+    source=False is the frozen copy in plugins/sugra-api, checked as it ships.
+    """
     for slug in EXPECTED:
-        path = SKILLS / slug / "SKILL.md"
+        path = base / slug / "SKILL.md"
+        if not path.is_file():
+            fail(f"{path.relative_to(ROOT)} missing")
         text = path.read_text(encoding="utf-8")
         match = FRONTMATTER_RE.match(text)
         if not match:
             fail(f"{slug}: frontmatter must be name, description, license MIT")
         if "metadata:" in text.split("---", 2)[1]:
             fail(f"{slug}: put skill interface in agents/openai.yaml, not SKILL.md metadata")
-        yaml_path = SKILLS / slug / "agents" / "openai.yaml"
-        if not yaml_path.is_file():
-            fail(f"{slug}: missing agents/openai.yaml")
-        yaml_text = yaml_path.read_text(encoding="utf-8")
-        if "interface:" not in yaml_text or "display_name:" not in yaml_text:
-            fail(f"{slug}: agents/openai.yaml must declare interface.display_name")
-        copy_lint(yaml_text, str(yaml_path.relative_to(ROOT)))
+        yaml_path = base / slug / "agents" / "openai.yaml"
+        if source:
+            if (base / slug / "agents").exists():
+                fail(f"{slug}: vendor files (agents/) belong in sugra-api-plugins, not the skill source")
+            for md in sorted((base / slug).rglob("*.md")):
+                counted = tool_count(md.read_text(encoding="utf-8"))
+                if counted:
+                    fail(f"{md.relative_to(ROOT)}: tool count {counted.group(0)!r}; name the tools instead")
+        else:
+            if not yaml_path.is_file():
+                fail(f"{slug}: missing agents/openai.yaml")
+            yaml_text = yaml_path.read_text(encoding="utf-8")
+            if "interface:" not in yaml_text or "display_name:" not in yaml_text:
+                fail(f"{slug}: agents/openai.yaml must declare interface.display_name")
+            copy_lint(yaml_text, str(yaml_path.relative_to(ROOT)))
         if match.group("name") != slug:
             fail(f"{slug}: frontmatter name {match.group('name')!r}")
         description = match.group("description").strip()
@@ -108,7 +161,7 @@ def main() -> None:
         if line_count > 500:
             fail(f"{slug}: SKILL.md {line_count} lines > 500")
 
-    using = (SKILLS / "using-sugra-api" / "SKILL.md").read_text(encoding="utf-8")
+    using = (base / "using-sugra-api" / "SKILL.md").read_text(encoding="utf-8")
     for needle in ("x-api-key", "https://sugra.ai", "mcp.sugra.ai", "docs.sugra.ai"):
         if needle not in using:
             fail(f"using-sugra-api must mention {needle}")
@@ -116,25 +169,53 @@ def main() -> None:
         if direction not in using:
             fail(f"using-sugra-api must name {direction}")
 
-    docs = (SKILLS / "live-docs" / "SKILL.md").read_text(encoding="utf-8")
+    docs = (base / "live-docs" / "SKILL.md").read_text(encoding="utf-8")
     for needle in ("https://docs.sugra.ai", "Ask AI", "/openapi.json", "/sources", "/stats", "sugra.systems/blog"):
         if needle not in docs:
             fail(f"live-docs must mention {needle}")
 
-    connect = (SKILLS / "connect" / "SKILL.md").read_text(encoding="utf-8")
+    connect = (base / "connect" / "SKILL.md").read_text(encoding="utf-8")
     for needle in ("x-api-key", "mcp.sugra.ai", "sugra-api-mcp", "ChatGPT"):
         if needle not in connect:
             fail(f"connect must mention {needle}")
-    clients = SKILLS / "connect" / "references" / "clients.md"
+    clients = base / "connect" / "references" / "clients.md"
     if not clients.is_file():
         fail("connect/references/clients.md missing")
     copy_lint(clients.read_text(encoding="utf-8"), "connect/references/clients.md")
 
-    discover = (SKILLS / "discover-and-call" / "SKILL.md").read_text(encoding="utf-8")
+    discover = (base / "discover-and-call" / "SKILL.md").read_text(encoding="utf-8")
     if "docs.sugra.ai" not in discover or "/openapi.json" not in discover:
         fail("discover-and-call must use docs.sugra.ai and OpenAPI")
     if "search_endpoints" not in discover or "call_endpoint" not in discover:
         fail("discover-and-call must teach the MCP loop")
+    if "user's language" not in using:
+        fail("using-sugra-api must tell the agent to match the user's language")
+
+
+def tool_count(text: str) -> re.Match | None:
+    return TOOL_COUNT_RE.search(MARKDOWN_MARKS_RE.sub("", text))
+
+
+def check_tool_count_rule() -> None:
+    for text in TOOL_COUNT_HITS:
+        if not tool_count(text):
+            fail(f"tool count rule misses {text!r}")
+    for text in TOOL_COUNT_MISSES:
+        if tool_count(text):
+            fail(f"tool count rule wrongly matches {text!r}")
+
+
+def main() -> None:
+    check_tool_count_rule()
+    roots = sorted(p.parent.name for p in ROOT.glob("*/SKILL.md"))
+    if tuple(roots) != EXPECTED:
+        fail(f"root skill folders {roots} != {EXPECTED}")
+    check_skills(ROOT, source=True)
+
+    slugs = sorted(p.name for p in SKILLS.iterdir() if p.is_dir())
+    if tuple(slugs) != EXPECTED:
+        fail(f"skill folders {slugs} != {EXPECTED}")
+    check_skills(SKILLS, source=False)
 
     portable = load_json(PLUGIN / "plugin.json")
     claude_plugin = load_json(PLUGIN / ".claude-plugin" / "plugin.json")
@@ -170,8 +251,6 @@ def main() -> None:
     policy = agents_mkt["plugins"][0].get("policy") or {}
     if policy.get("installation") != "AVAILABLE" or policy.get("authentication") != "ON_INSTALL":
         fail("codex marketplace plugin policy")
-    if "user's language" not in using:
-        fail("using-sugra-api must tell the agent to match the user's language")
     if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
         fail("plugin author")
     if claude_mkt["name"] != "sugra-api-skills" or grok_mkt["name"] != "sugra-api-skills":
