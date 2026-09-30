@@ -43,15 +43,20 @@ TIER_C = (
 BANS = ("real-time", "realtime", "financial intelligence", "blackbox")
 # A tool count goes stale the day the server changes; name the tools instead.
 # A number, up to two qualifier words, then "tool" or "tools" - but not "tool
-# call", which counts calls, not tools.
+# call", which counts calls, not tools. The rule reads the text with Markdown
+# code and emphasis marks removed. It is a guard over the phrasings a count
+# takes, not a parser of English.
 UNITS = "one|two|three|four|five|six|seven|eight|nine"
 TEENS = "ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen"
 TENS = "twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety"
 NUMBER = rf"(?:\d+|(?:{TENS})(?:[- ](?:{UNITS}))?|{TEENS}|{UNITS})"
+# words in one paragraph: spaces, or one line break, never a blank line
+GAP = r"(?:[ \t]+|[ \t]*\n[ \t]*)"
 TOOL_COUNT_RE = re.compile(
-    rf"\b{NUMBER}\s+(?:(?!of\b)[a-z-]+\s+){{0,2}}tools?\b(?!\s+calls?\b)",
+    rf"\b{NUMBER}{GAP}(?:(?!of\b)[a-z-]+{GAP}){{0,2}}tools?\b(?!{GAP}calls?\b)",
     re.IGNORECASE,
 )
+MARKDOWN_MARKS_RE = re.compile(r"[`*_~]")
 TOOL_COUNT_HITS = (
     "one tool",
     "11 tools",
@@ -59,6 +64,11 @@ TOOL_COUNT_HITS = (
     "twenty-one tools",
     "three hosted gateway tools",
     "two composed tools",
+    "`eight` tools",
+    "**3** tools",
+    "two *gateway* tools",
+    "_five_ tools",
+    "eight\ntools",
 )
 TOOL_COUNT_MISSES = (
     "one tool call",
@@ -67,6 +77,7 @@ TOOL_COUNT_MISSES = (
     "the gateway tools",
     "a tool",
     "one of the tools",
+    "--port 8001\n```\n\nGateway tools only",
 )
 DIRECTIONS = (
     "Sugra Finance",
@@ -124,7 +135,7 @@ def check_skills(base: Path, source: bool) -> None:
             if (base / slug / "agents").exists():
                 fail(f"{slug}: vendor files (agents/) belong in sugra-api-plugins, not the skill source")
             for md in sorted((base / slug).rglob("*.md")):
-                counted = TOOL_COUNT_RE.search(md.read_text(encoding="utf-8"))
+                counted = tool_count(md.read_text(encoding="utf-8"))
                 if counted:
                     fail(f"{md.relative_to(ROOT)}: tool count {counted.group(0)!r}; name the tools instead")
         else:
@@ -181,12 +192,16 @@ def check_skills(base: Path, source: bool) -> None:
         fail("using-sugra-api must tell the agent to match the user's language")
 
 
+def tool_count(text: str) -> re.Match | None:
+    return TOOL_COUNT_RE.search(MARKDOWN_MARKS_RE.sub("", text))
+
+
 def check_tool_count_rule() -> None:
     for text in TOOL_COUNT_HITS:
-        if not TOOL_COUNT_RE.search(text):
+        if not tool_count(text):
             fail(f"tool count rule misses {text!r}")
     for text in TOOL_COUNT_MISSES:
-        if TOOL_COUNT_RE.search(text):
+        if tool_count(text):
             fail(f"tool count rule wrongly matches {text!r}")
 
 
