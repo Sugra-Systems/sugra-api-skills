@@ -51,22 +51,22 @@ https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef
 
 Codex also installs from the same directory via Plugins in the Codex app.
 
-From a clone, copy skills into Codex:
+From a clone, copy the skill folders into Codex:
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.agents/skills/
+cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
 ```
 
 ### Cursor
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.cursor/skills/
+cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
 ```
 
 ### Gemini CLI
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
+cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
 ```
 
 ### Hosted MCP
@@ -83,7 +83,9 @@ In Claude, [Add to Claude](https://url.sugra.ai/claude) connects the Sugra API M
 pip install sugra-api-mcp
 ```
 
-## Plugin `sugra-api`
+## Skills
+
+Each skill is a folder at the root of this repository.
 
 | Skill | When |
 |---|---|
