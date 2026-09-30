@@ -170,7 +170,7 @@ def check_skills(base: Path, source: bool) -> None:
             fail(f"using-sugra-api must name {direction}")
 
     docs = (base / "live-docs" / "SKILL.md").read_text(encoding="utf-8")
-    for needle in ("https://docs.sugra.ai", "Ask AI", "/openapi.json", "/sources", "/stats", "sugra.systems/blog"):
+    for needle in ("https://docs.sugra.ai", "Ask AI", "/openapi.json", "/sources", "sugra.systems/blog"):
         if needle not in docs:
             fail(f"live-docs must mention {needle}")
 

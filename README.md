@@ -17,7 +17,7 @@ Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.
 
 The Sugra API MCP server (hosted) is published in Anthropic's Connectors Directory for Claude: [Add to Claude](https://url.sugra.ai/claude). Connect it there, and install these skills from this repository on any platform below.
 
-**Sugra API aggregates 36 domains across 160+ primary sources. 1,600+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/settings/billing).**
+**Sugra API aggregates 36 domains across 160+ primary sources. 1,600+ endpoints under one LLM-ready envelope. Pick a client below or jump straight to the [API key](https://app.sugra.ai/register).**
 
 Seven product directions (Sugra Finance, Sugra Macro, Sugra Entity, Sugra Net Atlas, Sugra News, Sugra Earth, Sugra Research). HTTPS and MCP are both complete paths.
 
@@ -25,7 +25,7 @@ This is not the MCP server ([sugra-api-mcp](https://github.com/Sugra-Systems/sug
 
 ## Install
 
-Get a key at [app.sugra.ai/settings/billing](https://app.sugra.ai/settings/billing) (Free: 50 requests/day).
+Sign up at [app.sugra.ai/register](https://app.sugra.ai/register) for a key (Free: 50 requests a day per account).
 
 ### Claude Code
 
@@ -92,8 +92,8 @@ Each skill is a folder at the root of this repository.
 | `using-sugra-api` | map of surfaces and directions |
 | `live-docs` | docs.sugra.ai, OpenAPI, sources, blog |
 | `connect` | HTTPS, hosted MCP, stdio, self-host, clients |
-| `auth-and-quota` | `x-api-key`, Bearer, OAuth, 401/429 |
-| `discover-and-call` | find and call on HTTP or MCP |
+| `auth-and-quota` | `x-api-key`, Bearer, OAuth, quota, errors |
+| `discover-and-call` | find, call, and check the answer on HTTP or MCP |
 | `envelope-and-attribution` | `{data, meta}`, source names, clocks |
 | `cross-domain-briefing` | two or three directions in one answer |
 
@@ -103,7 +103,7 @@ Author: Sugra Systems, Inc. License: MIT. Skills follow the [Agent Skills](https
 
 Endpoint reference, search, and Ask AI: [https://docs.sugra.ai](https://docs.sugra.ai)
 
-Machine companions: `https://sugra.ai/openapi.json`, `/sources`, `/stats`.
+Machine companions: `https://sugra.ai/openapi.json`, `https://sugra.ai/sources`, and the Markdown pages indexed in `https://docs.sugra.ai/llms.txt`.
 
 ## Local check
 

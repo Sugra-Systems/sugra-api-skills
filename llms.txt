@@ -23,6 +23,6 @@ This repository is not the MCP server and not the HTTP cookbook.
 - https://docs.sugra.ai
 - https://sugra.ai/docs (entry)
 - https://sugra.ai/openapi.json
+- https://docs.sugra.ai/llms.txt
 - https://sugra.ai/sources
-- https://sugra.ai/stats
 - https://sugra.systems/blog
