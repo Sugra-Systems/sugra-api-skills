@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+VERSION = "1.1.1"
 PLUGIN = ROOT / "plugins" / "sugra-api"
 SKILLS = PLUGIN / "skills"
 EXPECTED = (
@@ -145,8 +146,10 @@ def main() -> None:
         fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
     if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if portable.get("version") != "1.1.1" or claude_plugin.get("version") != "1.1.1":
+    if portable.get("version") != VERSION or claude_plugin.get("version") != VERSION:
         fail("plugin version")
+    if claude_mkt["plugins"][0].get("version") != VERSION or grok_mkt["plugins"][0].get("version") != VERSION:
+        fail("marketplace plugin version")
     mcp_conf = load_json(PLUGIN / ".mcp.json")
     sugra_mcp = ((mcp_conf.get("mcpServers") or {}).get("sugra-api") or {})
     if sugra_mcp.get("type") != "http":
@@ -214,8 +217,8 @@ def main() -> None:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:
         fail("README must show pip install sugra-api-mcp")
-    if "1.1.1" not in readme:
-        fail("README must show pack version 1.1.1")
+    if f"badge/version-{VERSION}-F5A623" not in readme or f'alt="Version {VERSION}"' not in readme:
+        fail(f"README badge must show pack version {VERSION}")
     if ".mcp.json" not in plugin_readme:
         fail("plugin README must mention .mcp.json")
     if "OpenAI directory zip" not in plugin_readme:
