@@ -1,6 +1,6 @@
 # Client attach blocks
 
-Stdio MCP (local package). Replace the key.
+Stdio MCP (local package). Put the key in the client's config file or environment, never in chat or on a typed command line (shell history keeps it).
 
 ```json
 {
@@ -19,20 +19,23 @@ File: macOS `~/Library/Application Support/Claude/claude_desktop_config.json`; W
 
 ## Claude Code
 
+The server inherits Claude Code's environment. Read the key without echo, then start Claude Code from that shell:
+
 ```bash
+read -rs SUGRA_API_KEY && export SUGRA_API_KEY
 claude mcp add sugra -- sugra-api-mcp
-export SUGRA_API_KEY=sugra_...
 ```
 
-Same JSON in `~/.claude/config.json`.
+Or the same JSON in a project `.mcp.json`.
 
 ## Gemini CLI
 
 User `~/.gemini/settings.json` or project `.gemini/settings.json`, same `mcpServers` block. Or:
 
 ```bash
-gemini mcp add --scope user -e SUGRA_API_KEY=sugra_... sugra sugra-api-mcp
-gemini mcp add --scope user --transport http --header "Authorization: Bearer sugra_..." sugra https://mcp.sugra.ai/mcp
+read -rs SUGRA_API_KEY && export SUGRA_API_KEY
+gemini mcp add --scope user -e SUGRA_API_KEY="$SUGRA_API_KEY" sugra sugra-api-mcp
+gemini mcp add --scope user --transport http --header "Authorization: Bearer $SUGRA_API_KEY" sugra https://mcp.sugra.ai/mcp
 ```
 
 `gemini mcp list`, then `/mcp` in session.

@@ -39,8 +39,10 @@ Confirm with live `tools/list`. Do not call the composed tools on a stdio or sel
 
 ```bash
 pip install sugra-api-mcp
-export SUGRA_API_KEY=sugra_...
+read -rs SUGRA_API_KEY && export SUGRA_API_KEY
 ```
+
+`read -rs` takes the key without echo, so it stays out of shell history.
 
 Gateway tools only. Catalog search works without the key; `call_endpoint` / `fetch_data` / entity tools return `missing_api_key` until it is set. If the console script is not on PATH: `"command": "python", "args": ["-m", "sugra_api_mcp"]`.
 

@@ -42,10 +42,31 @@ TIER_C = (
 )
 BANS = ("real-time", "realtime", "financial intelligence", "blackbox")
 # A tool count goes stale the day the server changes; name the tools instead.
-NUMBER = r"(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+# A number, up to two qualifier words, then "tool" or "tools" - but not "tool
+# call", which counts calls, not tools.
+UNITS = "one|two|three|four|five|six|seven|eight|nine"
+TEENS = "ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen"
+TENS = "twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety"
+NUMBER = rf"(?:\d+|(?:{TENS})(?:[- ](?:{UNITS}))?|{TEENS}|{UNITS})"
 TOOL_COUNT_RE = re.compile(
-    rf"\b{NUMBER}\s+(?:[a-z-]+\s+)?tools\b|\b{NUMBER}\s+(?:gateway|composed)\b",
+    rf"\b{NUMBER}\s+(?:(?!of\b)[a-z-]+\s+){{0,2}}tools?\b(?!\s+calls?\b)",
     re.IGNORECASE,
+)
+TOOL_COUNT_HITS = (
+    "one tool",
+    "11 tools",
+    "thirteen tools",
+    "twenty-one tools",
+    "three hosted gateway tools",
+    "two composed tools",
+)
+TOOL_COUNT_MISSES = (
+    "one tool call",
+    "two tool calls",
+    "two gateway transports",
+    "the gateway tools",
+    "a tool",
+    "one of the tools",
 )
 DIRECTIONS = (
     "Sugra Finance",
@@ -102,9 +123,10 @@ def check_skills(base: Path, source: bool) -> None:
         if source:
             if (base / slug / "agents").exists():
                 fail(f"{slug}: vendor files (agents/) belong in sugra-api-plugins, not the skill source")
-            counted = TOOL_COUNT_RE.search(text)
-            if counted:
-                fail(f"{slug}: tool count {counted.group(0)!r}; name the tools instead")
+            for md in sorted((base / slug).rglob("*.md")):
+                counted = TOOL_COUNT_RE.search(md.read_text(encoding="utf-8"))
+                if counted:
+                    fail(f"{md.relative_to(ROOT)}: tool count {counted.group(0)!r}; name the tools instead")
         else:
             if not yaml_path.is_file():
                 fail(f"{slug}: missing agents/openai.yaml")
@@ -159,7 +181,17 @@ def check_skills(base: Path, source: bool) -> None:
         fail("using-sugra-api must tell the agent to match the user's language")
 
 
+def check_tool_count_rule() -> None:
+    for text in TOOL_COUNT_HITS:
+        if not TOOL_COUNT_RE.search(text):
+            fail(f"tool count rule misses {text!r}")
+    for text in TOOL_COUNT_MISSES:
+        if TOOL_COUNT_RE.search(text):
+            fail(f"tool count rule wrongly matches {text!r}")
+
+
 def main() -> None:
+    check_tool_count_rule()
     roots = sorted(p.parent.name for p in ROOT.glob("*/SKILL.md"))
     if tuple(roots) != EXPECTED:
         fail(f"root skill folders {roots} != {EXPECTED}")

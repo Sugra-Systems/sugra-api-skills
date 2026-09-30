@@ -54,19 +54,19 @@ Codex also installs from the same directory via Plugins in the Codex app.
 From a clone, copy the skill folders into Codex:
 
 ```
-cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
+mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
 ```
 
 ### Cursor
 
 ```
-cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
+mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
 ```
 
 ### Gemini CLI
 
 ```
-cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
+mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
 ```
 
 ### Hosted MCP

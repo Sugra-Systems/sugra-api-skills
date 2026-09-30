@@ -40,7 +40,7 @@ OAuth JWT: audience `https://app.sugra.ai/mcp` on both MCP hosts, scope `sugra:r
 
 Stdio catalog tools (`search_endpoints`, `describe_endpoint`, `list_toolsets`, `list_sources`) work without a key. `call_endpoint`, `fetch_data`, and entity tools return `missing_api_key` until `SUGRA_API_KEY` is set.
 
-MCP tool JSON does not forward `X-RateLimit-*`. On 429 wait for `retry_after` (seconds). `elapsed_ms` on an MCP tool error says which timeout fired. Downstream MCP still calls the API with `x-api-key`.
+MCP tool JSON does not forward `X-RateLimit-*`. On 429 wait for `retry_after` (seconds). `elapsed_ms` on an MCP tool error is how long the call ran before it failed. Downstream MCP still calls the API with `x-api-key`.
 
 ## Errors
 
