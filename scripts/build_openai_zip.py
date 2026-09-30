@@ -26,7 +26,9 @@ ROOT = Path(__file__).resolve().parent.parent
 PACKAGE = "providers/openai/sugra-api"
 DIST = ROOT / "dist"
 LISTING_FIELDS = ("displayName", "shortDescription")
-LISTING_FIELD_NOTE = 30
+LISTING_LIMIT = 30
+# The live 1.0.1 listing was accepted with a longer shortDescription, so it gets a note, not a failure.
+LISTING_NOTE_ONLY = ("shortDescription",)
 
 
 def git(*args: str) -> bytes:
@@ -77,8 +79,11 @@ def main(argv: list[str]) -> int:
         if not isinstance(value, str) or not value.strip():
             print(f"FAIL plugin.json interface.{field} must be a non-empty string", file=sys.stderr)
             return 1
-        if len(value) > LISTING_FIELD_NOTE:
-            print(f"note: {field} is {len(value)} chars; the directory docs name {LISTING_FIELD_NOTE}")
+        if len(value) > LISTING_LIMIT:
+            if field not in LISTING_NOTE_ONLY:
+                print(f"FAIL plugin.json interface.{field} is {len(value)} chars; the limit is {LISTING_LIMIT}", file=sys.stderr)
+                return 1
+            print(f"note: {field} is {len(value)} chars; the directory docs name {LISTING_LIMIT}")
 
     skills_only = "--skills-only" in flags
     names = sorted(rel for rel in package if not (skills_only and rel == "mcp.json"))

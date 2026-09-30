@@ -77,7 +77,21 @@ def copy_lint(text: str, label: str) -> None:
 
 
 def load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        fail(f"{path.relative_to(ROOT).as_posix()} must be a JSON object")
+    return data
+
+
+def check_manifest(manifest: dict, label: str) -> None:
+    """Fields every package manifest carries, whatever its vendor requires."""
+    for field in ("name", "version", "description", "homepage", "repository", "license"):
+        value = manifest.get(field)
+        if not isinstance(value, str) or not value.strip():
+            fail(f"{label}: {field} must be a non-empty string")
+    author = manifest.get("author")
+    if not isinstance(author, dict) or author.get("name") != "Sugra Systems, Inc.":
+        fail(f"{label}: author.name must be Sugra Systems, Inc.")
 
 
 def check_mcp(conf: dict, kind: str, label: str) -> None:
@@ -175,6 +189,7 @@ def main() -> None:
     # Claude package. The Anthropic directory submission is bound to this folder
     # and reviews every change in it, so it holds Claude files only.
     claude_plugin = load_json(CLAUDE / ".claude-plugin" / "plugin.json")
+    check_manifest(claude_plugin, "claude plugin.json")
     if claude_plugin.get("name") != "sugra-api" or claude_plugin.get("version") != VERSIONS["claude"]:
         fail("claude plugin name or version")
     if claude_plugin.get("homepage") != "https://docs.sugra.ai":
@@ -183,8 +198,6 @@ def main() -> None:
         fail("claude plugin privacyPolicyUrl")
     if claude_plugin.get("skills") not in ("./skills", "./skills/"):
         fail("claude plugin skills path")
-    if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
-        fail("claude plugin author")
     for stray in ("plugin.json", "mcp.json", ".codex-plugin", ".grok-plugin", ".cursor-plugin"):
         if (CLAUDE / stray).exists():
             fail(f"plugins/sugra-api/{stray}: other vendors' files belong in providers/")
@@ -192,6 +205,7 @@ def main() -> None:
 
     # OpenAI package: Agent Plugins 1.0.0, read by Codex and zipped for the Plugins Directory.
     portable = load_json(OPENAI / "plugin.json")
+    check_manifest(portable, "openai plugin.json")
     if portable.get("$schema") != AGENT_PLUGINS + "plugin.schema.json":
         fail("openai plugin.json must declare the Agent Plugins schema")
     if portable.get("name") != "sugra-api" or portable.get("version") != VERSIONS["openai"]:
@@ -205,6 +219,8 @@ def main() -> None:
         value = openai_iface.get(field)
         if not isinstance(value, str) or not value.strip():
             fail(f"openai interface.{field} must be a non-empty string")
+    if len(openai_iface["displayName"]) > 30:
+        fail("openai interface.displayName is over the 30 characters the directory allows")
     if not (OPENAI / "assets" / "logo.png").is_file():
         fail("providers/openai/sugra-api/assets/logo.png missing")
     for stray in (".claude-plugin", ".codex-plugin", ".mcp.json", "hooks", ".app.json"):
@@ -218,6 +234,7 @@ def main() -> None:
     # Grok package. Grok reads a root plugin.json before .grok-plugin/plugin.json,
     # so this folder must not carry one.
     grok_plugin = load_json(GROK / ".grok-plugin" / "plugin.json")
+    check_manifest(grok_plugin, "grok plugin.json")
     if grok_plugin.get("name") != "sugra-api" or grok_plugin.get("version") != VERSIONS["grok"]:
         fail("grok plugin name or version")
     for stray in ("plugin.json", "mcp.json", ".claude-plugin", ".codex-plugin"):
