@@ -145,7 +145,7 @@ def main() -> None:
         fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
     if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
         fail("plugin name")
-    if portable.get("version") != "1.1.0" or claude_plugin.get("version") != "1.1.0":
+    if portable.get("version") != "1.1.1" or claude_plugin.get("version") != "1.1.1":
         fail("plugin version")
     mcp_conf = load_json(PLUGIN / ".mcp.json")
     sugra_mcp = ((mcp_conf.get("mcpServers") or {}).get("sugra-api") or {})
@@ -162,6 +162,8 @@ def main() -> None:
         fail("portable extensions.com.openai interface icons")
     if claude_plugin.get("homepage") != "https://docs.sugra.ai":
         fail("plugin homepage must be docs.sugra.ai")
+    if claude_plugin.get("privacyPolicyUrl") != "https://sugra.systems/privacy-policy":
+        fail("claude plugin privacyPolicyUrl")
     if claude_plugin.get("skills") not in ("./skills", "./skills/"):
         fail("claude plugin skills path")
     logo = PLUGIN / "assets" / "logo.png"
@@ -212,8 +214,8 @@ def main() -> None:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:
         fail("README must show pip install sugra-api-mcp")
-    if "1.1.0" not in readme:
-        fail("README must show pack version 1.1.0")
+    if "1.1.1" not in readme:
+        fail("README must show pack version 1.1.1")
     if ".mcp.json" not in plugin_readme:
         fail("plugin README must mention .mcp.json")
     if "OpenAI directory zip" not in plugin_readme:
