@@ -9,7 +9,9 @@ plugin directories reject symlinks and paths outside the package folder.
 
 from __future__ import annotations
 
+import os
 import sys
+import tempfile
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,6 +42,32 @@ def guard(path: Path) -> None:
             raise SystemExit(f"FAIL {current.relative_to(ROOT).as_posix()}: symlink")
     if path.exists() and not path.resolve().is_relative_to(ROOT):
         raise SystemExit(f"FAIL {rel.as_posix()}: resolves outside the repository")
+
+
+def refuse_links(base: Path) -> None:
+    """Fail when base, or anything under it, is a link or not a plain file or folder."""
+    guard(base)
+    if not base.exists():
+        return
+    for path in [base, *sorted(base.rglob("*"))]:
+        rel = path.relative_to(ROOT).as_posix()
+        if is_link(path):
+            raise SystemExit(f"FAIL {rel}: symlink")
+        if not (path.is_file() or path.is_dir()):
+            raise SystemExit(f"FAIL {rel}: not a regular file")
+
+
+def replace_file(dest: Path, data: bytes) -> None:
+    """Write through a new file in the same folder, so a hard-linked dest is never written into."""
+    fd, tmp = tempfile.mkstemp(dir=dest.parent, prefix=".sync-")
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        os.chmod(tmp, 0o644)
+        os.replace(tmp, dest)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def files_under(base: Path) -> dict[str, bytes]:
@@ -96,7 +124,7 @@ def write() -> None:
                 guard(dest.parent)
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 guard(dest)
-                dest.write_bytes(data)
+                replace_file(dest, data)
                 print(f"wrote {package}/skills/{rel}")
         for folder in sorted(target.rglob("*"), reverse=True):
             if folder.is_dir() and not any(folder.iterdir()):

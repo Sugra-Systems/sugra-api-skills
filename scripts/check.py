@@ -87,6 +87,21 @@ def check_mcp(conf: dict, kind: str, label: str) -> None:
 
 
 def main() -> None:
+    # Directories reject links, so every file this gate reads must be a plain file in the repository.
+    for base in (
+        SKILLS,
+        CLAUDE,
+        OPENAI,
+        GROK,
+        ROOT / ".claude-plugin",
+        ROOT / ".grok-plugin",
+        ROOT / ".agents" / "plugins",
+        ROOT / "README.md",
+        ROOT / "SECURITY.md",
+        ROOT / "llms.txt",
+    ):
+        sync.refuse_links(base)
+
     slugs = sorted(p.name for p in SKILLS.iterdir() if p.is_dir())
     if tuple(slugs) != EXPECTED:
         fail(f"skill folders {slugs} != {EXPECTED}")
