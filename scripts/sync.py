@@ -23,25 +23,45 @@ PACKAGES = {
 }
 
 
+def is_link(path: Path) -> bool:
+    return path.is_symlink() or path.is_junction()
+
+
+def guard(path: Path) -> None:
+    """Refuse a path outside the repository or one reached through a link."""
+    try:
+        rel = path.relative_to(ROOT)
+    except ValueError:
+        raise SystemExit(f"FAIL {path}: outside the repository") from None
+    current = ROOT
+    for part in rel.parts:
+        current = current / part
+        if is_link(current):
+            raise SystemExit(f"FAIL {current.relative_to(ROOT).as_posix()}: symlink")
+    if path.exists() and not path.resolve().is_relative_to(ROOT):
+        raise SystemExit(f"FAIL {rel.as_posix()}: resolves outside the repository")
+
+
 def files_under(base: Path) -> dict[str, bytes]:
+    guard(base)
     if not base.is_dir():
         return {}
     out = {}
     for path in sorted(base.rglob("*")):
-        if path.is_symlink():
-            raise SystemExit(f"FAIL {path.relative_to(ROOT)}: symlink")
+        if is_link(path):
+            raise SystemExit(f"FAIL {path.relative_to(ROOT).as_posix()}: symlink")
         if path.is_file():
             out[path.relative_to(base).as_posix()] = path.read_bytes()
     return out
 
 
+def keep(rel: str, excluded: tuple[str, ...]) -> bool:
+    """rel is skill/path; excluded names paths inside a skill folder."""
+    return PurePosixPath(*PurePosixPath(rel).parts[1:]).as_posix() not in excluded
+
+
 def expected(excluded: tuple[str, ...]) -> dict[str, bytes]:
-    out = {}
-    for rel, data in files_under(SOURCE).items():
-        inside_skill = PurePosixPath(*PurePosixPath(rel).parts[1:]).as_posix()
-        if inside_skill not in excluded:
-            out[rel] = data
-    return out
+    return {rel: data for rel, data in files_under(SOURCE).items() if keep(rel, excluded)}
 
 
 def drift() -> list[str]:
@@ -66,12 +86,16 @@ def write() -> None:
         want = expected(excluded)
         have = files_under(target)
         for rel in sorted(have.keys() - want.keys()):
-            (target / rel).unlink()
+            dest = target / rel
+            guard(dest)
+            dest.unlink()
             print(f"removed {package}/skills/{rel}")
         for rel, data in want.items():
             if have.get(rel) != data:
                 dest = target / rel
+                guard(dest.parent)
                 dest.parent.mkdir(parents=True, exist_ok=True)
+                guard(dest)
                 dest.write_bytes(data)
                 print(f"wrote {package}/skills/{rel}")
         for folder in sorted(target.rglob("*"), reverse=True):

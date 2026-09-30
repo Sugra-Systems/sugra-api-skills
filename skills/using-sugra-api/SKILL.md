@@ -8,7 +8,7 @@ license: MIT
 
 Sugra API is intelligence infrastructure: one HTTP API, one key, seven product directions. Domain-agnostic. Do not frame it through one vertical.
 
-The surface is LLM-friendly: one `x-api-key`, one JSON envelope `{data, meta}` on every direction, MCP as the agent-native entry. Documentation truth is https://docs.sugra.ai (search and Ask AI). This skill is a map, not the catalog.
+The surface is LLM-friendly: one `x-api-key`, one JSON envelope `{data, meta}` on most responses (the envelope-less exceptions are in `envelope-and-attribution`), MCP as the agent-native entry. Documentation truth is https://docs.sugra.ai (search and Ask AI). This skill is a map, not the catalog.
 
 These files are English. Reply in the user's language.
 

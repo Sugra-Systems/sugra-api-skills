@@ -6,7 +6,7 @@ license: MIT
 
 # Envelope and attribution
 
-The API is LLM-friendly: one JSON envelope on every direction. Envelope detail also lives on https://docs.sugra.ai.
+The API is LLM-friendly: every direction uses one JSON envelope for most responses, and the few envelope-less payloads keep the same provenance keys. Envelope detail also lives on https://docs.sugra.ai.
 
 Most responses:
 

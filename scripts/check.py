@@ -186,6 +186,10 @@ def main() -> None:
     openai_iface = ((portable.get("extensions") or {}).get("com.openai") or {}).get("interface") or {}
     if openai_iface.get("composerIcon") != "./assets/logo.png" or openai_iface.get("logo") != "./assets/logo.png":
         fail("openai extensions.com.openai interface icons")
+    for field in ("displayName", "shortDescription", "longDescription", "developerName", "category"):
+        value = openai_iface.get(field)
+        if not isinstance(value, str) or not value.strip():
+            fail(f"openai interface.{field} must be a non-empty string")
     if not (OPENAI / "assets" / "logo.png").is_file():
         fail("providers/openai/sugra-api/assets/logo.png missing")
     for stray in (".claude-plugin", ".codex-plugin", ".mcp.json", "hooks", ".app.json"):
