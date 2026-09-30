@@ -8,7 +8,7 @@
       "name": "sugra-api",
       "source": {
         "source": "local",
-        "path": "./plugins/sugra-api"
+        "path": "./providers/openai/sugra-api"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -6,7 +6,6 @@
 
 <p align="center">
   <a href="https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef"><img src="https://img.shields.io/badge/ChatGPT-Plugins_Directory-F5A623" alt="ChatGPT Plugins Directory"></a>
-  <a href="https://github.com/Sugra-Systems/sugra-api-skills/releases"><img src="https://img.shields.io/badge/version-1.1.1-F5A623" alt="Version 1.1.1"></a>
   <a href="https://pypi.org/project/sugra-api-mcp/"><img src="https://img.shields.io/pypi/v/sugra-api-mcp?label=sugra-api-mcp&color=F5A623" alt="sugra-api-mcp on PyPI"></a>
   <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License" alt="License"></a>
 </p>
@@ -54,19 +53,19 @@ Codex also installs from the same directory via Plugins in the Codex app.
 From a clone, copy skills into Codex:
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.agents/skills/
+cp -R skills/. ~/.agents/skills/
 ```
 
 ### Cursor
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.cursor/skills/
+cp -R skills/. ~/.cursor/skills/
 ```
 
 ### Gemini CLI
 
 ```
-cp -R plugins/sugra-api/skills/. ~/.gemini/skills/
+cp -R skills/. ~/.gemini/skills/
 ```
 
 ### Hosted MCP
@@ -101,11 +100,23 @@ Author: Sugra Systems, Inc. License: MIT. Skills follow the [Agent Skills](https
 
 Endpoint reference, search, and Ask AI: [https://docs.sugra.ai](https://docs.sugra.ai)
 
-Machine companions: `https://sugra.ai/openapi.json`, `/sources`, `/stats`.
+Machine companions: `https://sugra.ai/openapi.json`, `/sources`.
+
+## Layout
+
+| Folder | What |
+|---|---|
+| `skills/` | the skills, edited here only |
+| `plugins/sugra-api/` | Claude package |
+| `providers/openai/sugra-api/` | ChatGPT and Codex package |
+| `providers/grok/sugra-api/` | Grok package |
+
+Each package carries a copy of `skills/` and versions on its own.
 
 ## Local check
 
 ```
+python scripts/sync.py
 python scripts/check.py
 ```
 

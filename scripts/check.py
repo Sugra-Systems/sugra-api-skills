@@ -7,10 +7,17 @@ import re
 import sys
 from pathlib import Path
 
+import sync
+
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "1.1.1"
-PLUGIN = ROOT / "plugins" / "sugra-api"
-SKILLS = PLUGIN / "skills"
+SKILLS = ROOT / "skills"
+CLAUDE = ROOT / "plugins" / "sugra-api"
+OPENAI = ROOT / "providers" / "openai" / "sugra-api"
+GROK = ROOT / "providers" / "grok" / "sugra-api"
+# each package releases on its own; bump only the package that changed
+VERSIONS = {"claude": "1.2.0", "openai": "1.2.0", "grok": "1.2.0"}
+MCP_URL = "https://app.sugra.ai/mcp"
+AGENT_PLUGINS = "https://agent-plugins.org/schemas/1.0.0/"
 EXPECTED = (
     "auth-and-quota",
     "connect",
@@ -71,6 +78,12 @@ def copy_lint(text: str, label: str) -> None:
 
 def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def check_mcp(conf: dict, kind: str, label: str) -> None:
+    servers = conf.get("mcpServers") or {}
+    if list(servers) != ["sugra-api"] or servers["sugra-api"] != {"type": kind, "url": MCP_URL}:
+        fail(f"{label} must define only sugra-api as type {kind} at {MCP_URL}")
 
 
 def main() -> None:
@@ -137,59 +150,85 @@ def main() -> None:
     if "search_endpoints" not in discover or "call_endpoint" not in discover:
         fail("discover-and-call must teach the MCP loop")
 
-    portable = load_json(PLUGIN / "plugin.json")
-    claude_plugin = load_json(PLUGIN / ".claude-plugin" / "plugin.json")
-    claude_mkt = load_json(ROOT / ".claude-plugin" / "marketplace.json")
-    grok_mkt = load_json(ROOT / ".grok-plugin" / "marketplace.json")
-    agents_mkt = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
-    if (PLUGIN / ".codex-plugin").exists():
-        fail("portable plugin.json with extensions.com.openai replaces .codex-plugin")
-    if portable.get("name") != "sugra-api" or claude_plugin["name"] != "sugra-api":
-        fail("plugin name")
-    if portable.get("version") != VERSION or claude_plugin.get("version") != VERSION:
-        fail("plugin version")
-    if claude_mkt["plugins"][0].get("version") != VERSION or grok_mkt["plugins"][0].get("version") != VERSION:
-        fail("marketplace plugin version")
-    mcp_conf = load_json(PLUGIN / ".mcp.json")
-    sugra_mcp = ((mcp_conf.get("mcpServers") or {}).get("sugra-api") or {})
-    if sugra_mcp.get("type") != "http":
-        fail(".mcp.json sugra-api must set type http")
-    if sugra_mcp.get("url") != "https://app.sugra.ai/mcp":
-        fail(".mcp.json must use https://app.sugra.ai/mcp (same origin as the OpenAI MCP listing)")
-    if portable.get("$schema") != "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json":
-        fail("portable plugin.json must declare Agent Plugins schema")
-    if "skills" in portable:
-        fail("portable plugin.json must not declare skills; skills/ is discovered")
-    openai_iface = ((portable.get("extensions") or {}).get("com.openai") or {}).get("interface") or {}
-    if openai_iface.get("composerIcon") != "./assets/logo.png" or openai_iface.get("logo") != "./assets/logo.png":
-        fail("portable extensions.com.openai interface icons")
+    if "user's language" not in using:
+        fail("using-sugra-api must tell the agent to match the user's language")
+
+    problems = sync.drift()
+    if problems:
+        fail(f"package skills differ from skills/ ({problems[0]}); run python scripts/sync.py")
+
+    # Claude package. The Anthropic directory submission is bound to this folder
+    # and reviews every change in it, so it holds Claude files only.
+    claude_plugin = load_json(CLAUDE / ".claude-plugin" / "plugin.json")
+    if claude_plugin.get("name") != "sugra-api" or claude_plugin.get("version") != VERSIONS["claude"]:
+        fail("claude plugin name or version")
     if claude_plugin.get("homepage") != "https://docs.sugra.ai":
-        fail("plugin homepage must be docs.sugra.ai")
+        fail("claude plugin homepage must be docs.sugra.ai")
     if claude_plugin.get("privacyPolicyUrl") != "https://sugra.systems/privacy-policy":
         fail("claude plugin privacyPolicyUrl")
     if claude_plugin.get("skills") not in ("./skills", "./skills/"):
         fail("claude plugin skills path")
-    logo = PLUGIN / "assets" / "logo.png"
-    if not logo.is_file():
-        fail("plugin assets/logo.png missing")
+    if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
+        fail("claude plugin author")
+    for stray in ("plugin.json", "mcp.json", ".codex-plugin", ".grok-plugin", ".cursor-plugin"):
+        if (CLAUDE / stray).exists():
+            fail(f"plugins/sugra-api/{stray}: other vendors' files belong in providers/")
+    check_mcp(load_json(CLAUDE / ".mcp.json"), "http", "plugins/sugra-api/.mcp.json")
+
+    # OpenAI package: Agent Plugins 1.0.0, read by Codex and zipped for the Plugins Directory.
+    portable = load_json(OPENAI / "plugin.json")
+    if portable.get("$schema") != AGENT_PLUGINS + "plugin.schema.json":
+        fail("openai plugin.json must declare the Agent Plugins schema")
+    if portable.get("name") != "sugra-api" or portable.get("version") != VERSIONS["openai"]:
+        fail("openai plugin name or version")
+    if "skills" in portable:
+        fail("openai plugin.json must not declare skills; skills/ is discovered")
+    openai_iface = ((portable.get("extensions") or {}).get("com.openai") or {}).get("interface") or {}
+    if openai_iface.get("composerIcon") != "./assets/logo.png" or openai_iface.get("logo") != "./assets/logo.png":
+        fail("openai extensions.com.openai interface icons")
+    if not (OPENAI / "assets" / "logo.png").is_file():
+        fail("providers/openai/sugra-api/assets/logo.png missing")
+    for stray in (".claude-plugin", ".codex-plugin", ".mcp.json", "hooks", ".app.json"):
+        if (OPENAI / stray).exists():
+            fail(f"providers/openai/sugra-api/{stray}: not part of the OpenAI package")
+    openai_mcp = load_json(OPENAI / "mcp.json")
+    if set(openai_mcp) != {"$schema", "mcpServers"} or openai_mcp["$schema"] != AGENT_PLUGINS + "mcp.schema.json":
+        fail("openai mcp.json must hold only the Agent Plugins $schema and mcpServers")
+    check_mcp(openai_mcp, "streamable-http", "providers/openai/sugra-api/mcp.json")
+
+    # Grok package. Grok reads a root plugin.json before .grok-plugin/plugin.json,
+    # so this folder must not carry one.
+    grok_plugin = load_json(GROK / ".grok-plugin" / "plugin.json")
+    if grok_plugin.get("name") != "sugra-api" or grok_plugin.get("version") != VERSIONS["grok"]:
+        fail("grok plugin name or version")
+    for stray in ("plugin.json", "mcp.json", ".claude-plugin", ".codex-plugin"):
+        if (GROK / stray).exists():
+            fail(f"providers/grok/sugra-api/{stray}: Grok would read it first or it belongs elsewhere")
+    check_mcp(load_json(GROK / ".mcp.json"), "http", "providers/grok/sugra-api/.mcp.json")
+
+    claude_mkt = load_json(ROOT / ".claude-plugin" / "marketplace.json")
+    grok_mkt = load_json(ROOT / ".grok-plugin" / "marketplace.json")
+    agents_mkt = load_json(ROOT / ".agents" / "plugins" / "marketplace.json")
+    for label, mkt in (("claude", claude_mkt), ("grok", grok_mkt), ("codex", agents_mkt)):
+        if mkt["name"] != "sugra-api-skills" or [p["name"] for p in mkt["plugins"]] != ["sugra-api"]:
+            fail(f"{label} marketplace must list plugin sugra-api as sugra-api-skills")
+    if claude_mkt["plugins"][0]["source"] != "./plugins/sugra-api":
+        fail("claude marketplace source")
+    if claude_mkt["plugins"][0].get("version") != VERSIONS["claude"]:
+        fail("claude marketplace version")
+    if grok_mkt["plugins"][0]["source"] != {"type": "local", "path": "./providers/grok/sugra-api"}:
+        fail("grok marketplace source")
+    if grok_mkt["plugins"][0].get("version") != VERSIONS["grok"]:
+        fail("grok marketplace version")
+    if agents_mkt["plugins"][0]["source"] != {"source": "local", "path": "./providers/openai/sugra-api"}:
+        fail("codex marketplace source")
     policy = agents_mkt["plugins"][0].get("policy") or {}
     if policy.get("installation") != "AVAILABLE" or policy.get("authentication") != "ON_INSTALL":
         fail("codex marketplace plugin policy")
-    if "user's language" not in using:
-        fail("using-sugra-api must tell the agent to match the user's language")
-    if claude_plugin["author"]["name"] != "Sugra Systems, Inc.":
-        fail("plugin author")
-    if claude_mkt["name"] != "sugra-api-skills" or grok_mkt["name"] != "sugra-api-skills":
-        fail("marketplace name")
-    if claude_mkt["plugins"][0]["source"] != "./plugins/sugra-api":
-        fail("claude marketplace source")
-    if grok_mkt["plugins"][0]["source"]["path"] != "./plugins/sugra-api":
-        fail("grok marketplace source")
-    if agents_mkt["plugins"][0]["source"]["path"] != "./plugins/sugra-api":
-        fail("codex marketplace source")
     for label, obj in (
-        ("portable plugin.json", portable),
-        ("plugin.json", claude_plugin),
+        ("openai plugin.json", portable),
+        ("claude plugin.json", claude_plugin),
+        ("grok plugin.json", grok_plugin),
         ("claude marketplace.json", claude_mkt),
         ("grok marketplace.json", grok_mkt),
         ("codex marketplace.json", agents_mkt),
@@ -199,8 +238,12 @@ def main() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
     llms = (ROOT / "llms.txt").read_text(encoding="utf-8")
-    plugin_readme = (PLUGIN / "README.md").read_text(encoding="utf-8")
-    copy_lint(plugin_readme, "plugins/sugra-api/README.md")
+    for package in (CLAUDE, OPENAI, GROK):
+        package_readme = (package / "README.md").read_text(encoding="utf-8")
+        label = (package / "README.md").relative_to(ROOT).as_posix()
+        copy_lint(package_readme, label)
+        if "scripts/sync.py" not in package_readme or MCP_URL not in package_readme:
+            fail(f"{label} must name scripts/sync.py and {MCP_URL}")
     copy_lint(readme, "README.md")
     copy_lint(security, "SECURITY.md")
     copy_lint(llms, "llms.txt")
@@ -217,12 +260,13 @@ def main() -> None:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:
         fail("README must show pip install sugra-api-mcp")
-    if f"badge/version-{VERSION}-F5A623" not in readme or f'alt="Version {VERSION}"' not in readme:
-        fail(f"README badge must show pack version {VERSION}")
-    if ".mcp.json" not in plugin_readme:
-        fail("plugin README must mention .mcp.json")
-    if "OpenAI directory zip" not in plugin_readme:
-        fail("plugin README must say the OpenAI zip omits .mcp.json")
+    if "badge/version-" in readme:
+        fail("README must not carry one pack version; each package versions on its own")
+    if "plugins/sugra-api/skills" in readme or "plugins/sugra-api/skills" in llms:
+        fail("README and llms.txt must point at skills/, the source folder")
+    for text, label in ((readme, "README"), (llms, "llms.txt")):
+        if "sugra.ai/stats" in text or "`/stats`" in text:
+            fail(f"{label} must not point readers at /stats")
     if "LLM-ready envelope" not in readme:
         fail("README must state the product pitch")
     print("ok", len(EXPECTED), "skills")
