@@ -12,7 +12,6 @@ This repository is not the MCP server and not the HTTP cookbook.
 
 - using-sugra-api/SKILL.md
 - live-docs/SKILL.md
-- connect/SKILL.md
 - auth-and-quota/SKILL.md
 - discover-and-call/SKILL.md
 - envelope-and-attribution/SKILL.md
