@@ -54,19 +54,19 @@ Codex also installs from the same directory via Plugins in the Codex app.
 From a clone, copy the skill folders into Codex:
 
 ```
-mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
+mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
 ```
 
 ### Cursor
 
 ```
-mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
+mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
 ```
 
 ### Gemini CLI
 
 ```
-mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs connect auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
+mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
 ```
 
 ### Hosted MCP
@@ -91,8 +91,7 @@ Each skill is a folder at the root of this repository.
 |---|---|
 | `using-sugra-api` | map of surfaces and directions |
 | `live-docs` | docs.sugra.ai, OpenAPI, sources, blog |
-| `connect` | HTTPS, hosted MCP, stdio, self-host, clients |
-| `auth-and-quota` | `x-api-key`, Bearer, OAuth, quota, errors |
+| `auth-and-quota` | `x-api-key`, quota, errors |
 | `discover-and-call` | find, call, and check the answer on HTTP or MCP |
 | `envelope-and-attribution` | `{data, meta}`, source names, clocks |
 | `cross-domain-briefing` | two or three directions in one answer |

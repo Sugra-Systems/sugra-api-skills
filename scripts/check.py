@@ -15,13 +15,14 @@ PLUGIN = ROOT / "plugins" / "sugra-api"
 SKILLS = PLUGIN / "skills"
 EXPECTED = (
     "auth-and-quota",
-    "connect",
     "cross-domain-briefing",
     "discover-and-call",
     "envelope-and-attribution",
     "live-docs",
     "using-sugra-api",
 )
+# The frozen copy still carries connect, which left the source.
+FROZEN = tuple(sorted(EXPECTED + ("connect",)))
 FRONTMATTER_RE = re.compile(
     r"^---\n"
     r"name: (?P<name>[^\n]+)\n"
@@ -114,13 +115,13 @@ def load_json(path: Path) -> dict:
 
 
 def check_skills(base: Path, source: bool) -> None:
-    """Check one set of the seven skills.
+    """Check one set of skills.
 
     source=True is the repository root: no vendor files (agents/openai.yaml
     belongs to the OpenAI package in sugra-api-plugins) and no tool counts.
     source=False is the frozen copy in plugins/sugra-api, checked as it ships.
     """
-    for slug in EXPECTED:
+    for slug in EXPECTED if source else FROZEN:
         path = base / slug / "SKILL.md"
         if not path.is_file():
             fail(f"{path.relative_to(ROOT)} missing")
@@ -162,7 +163,13 @@ def check_skills(base: Path, source: bool) -> None:
             fail(f"{slug}: SKILL.md {line_count} lines > 500")
 
     using = (base / "using-sugra-api" / "SKILL.md").read_text(encoding="utf-8")
-    for needle in ("x-api-key", "https://sugra.ai", "mcp.sugra.ai", "docs.sugra.ai"):
+    needles = ("x-api-key", "https://sugra.ai", "docs.sugra.ai")
+    # Client setup left the source with connect; the docs page that has it replaces it.
+    if source:
+        needles += ("https://docs.sugra.ai/doc-2263382",)
+    else:
+        needles += ("mcp.sugra.ai",)
+    for needle in needles:
         if needle not in using:
             fail(f"using-sugra-api must mention {needle}")
     for direction in DIRECTIONS:
@@ -174,14 +181,15 @@ def check_skills(base: Path, source: bool) -> None:
         if needle not in docs:
             fail(f"live-docs must mention {needle}")
 
-    connect = (base / "connect" / "SKILL.md").read_text(encoding="utf-8")
-    for needle in ("x-api-key", "mcp.sugra.ai", "sugra-api-mcp", "ChatGPT"):
-        if needle not in connect:
-            fail(f"connect must mention {needle}")
-    clients = base / "connect" / "references" / "clients.md"
-    if not clients.is_file():
-        fail("connect/references/clients.md missing")
-    copy_lint(clients.read_text(encoding="utf-8"), "connect/references/clients.md")
+    if not source:
+        connect = (base / "connect" / "SKILL.md").read_text(encoding="utf-8")
+        for needle in ("x-api-key", "mcp.sugra.ai", "sugra-api-mcp", "ChatGPT"):
+            if needle not in connect:
+                fail(f"connect must mention {needle}")
+        clients = base / "connect" / "references" / "clients.md"
+        if not clients.is_file():
+            fail("connect/references/clients.md missing")
+        copy_lint(clients.read_text(encoding="utf-8"), "connect/references/clients.md")
 
     discover = (base / "discover-and-call" / "SKILL.md").read_text(encoding="utf-8")
     if "docs.sugra.ai" not in discover or "/openapi.json" not in discover:
@@ -213,8 +221,8 @@ def main() -> None:
     check_skills(ROOT, source=True)
 
     slugs = sorted(p.name for p in SKILLS.iterdir() if p.is_dir())
-    if tuple(slugs) != EXPECTED:
-        fail(f"skill folders {slugs} != {EXPECTED}")
+    if tuple(slugs) != FROZEN:
+        fail(f"skill folders {slugs} != {FROZEN}")
     check_skills(SKILLS, source=False)
 
     portable = load_json(PLUGIN / "plugin.json")
