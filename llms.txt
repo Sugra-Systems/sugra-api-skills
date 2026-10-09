@@ -16,6 +16,10 @@ This repository is not the MCP server and not the HTTP cookbook.
 - discover-and-call/SKILL.md
 - envelope-and-attribution/SKILL.md
 - cross-domain-briefing/SKILL.md
+- markets-data/SKILL.md
+- macro-data/SKILL.md
+- earth-data/SKILL.md
+- news-data/SKILL.md
 
 ## Live documentation
 

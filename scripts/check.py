@@ -17,12 +17,25 @@ EXPECTED = (
     "auth-and-quota",
     "cross-domain-briefing",
     "discover-and-call",
+    "earth-data",
+    "envelope-and-attribution",
+    "live-docs",
+    "macro-data",
+    "markets-data",
+    "news-data",
+    "using-sugra-api",
+)
+# The frozen copy still carries connect, which left the source, and none of
+# the four domain skills (earth-data, macro-data, markets-data, news-data).
+FROZEN = (
+    "auth-and-quota",
+    "connect",
+    "cross-domain-briefing",
+    "discover-and-call",
     "envelope-and-attribution",
     "live-docs",
     "using-sugra-api",
 )
-# The frozen copy still carries connect, which left the source.
-FROZEN = tuple(sorted(EXPECTED + ("connect",)))
 FRONTMATTER_RE = re.compile(
     r"^---\n"
     r"name: (?P<name>[^\n]+)\n"
