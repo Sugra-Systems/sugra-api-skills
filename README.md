@@ -54,19 +54,19 @@ Codex also installs from the same directory via Plugins in the Codex app.
 From a clone, copy the skill folders into Codex:
 
 ```
-mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.agents/skills/
+mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing markets-data macro-data earth-data news-data ~/.agents/skills/
 ```
 
 ### Cursor
 
 ```
-mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.cursor/skills/
+mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing markets-data macro-data earth-data news-data ~/.cursor/skills/
 ```
 
 ### Gemini CLI
 
 ```
-mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing ~/.gemini/skills/
+mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing markets-data macro-data earth-data news-data ~/.gemini/skills/
 ```
 
 ### Hosted MCP
@@ -95,6 +95,10 @@ Each skill is a folder at the root of this repository.
 | `discover-and-call` | find, call, and check the answer on HTTP or MCP |
 | `envelope-and-attribution` | `{data, meta}`, source names, clocks |
 | `cross-domain-briefing` | two or three directions in one answer |
+| `markets-data` | prices, earnings, yields, volatility, FX, commodities, crypto, prediction markets |
+| `macro-data` | inflation, jobs, GDP, rates, housing, debt, trade, release dates |
+| `earth-data` | weather, climate, hazards, water, grids, crops, transport disruption |
+| `news-data` | news coverage, filings, press releases, sanctions screens, legislation |
 
 Author: Sugra Systems, Inc. License: MIT. Skills follow the [Agent Skills](https://agentskills.io/specification) format.
 
