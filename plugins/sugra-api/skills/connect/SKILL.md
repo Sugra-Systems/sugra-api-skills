@@ -25,7 +25,7 @@ Permanent alias: `https://app.sugra.ai/mcp`
 Auth: `Authorization: Bearer sugra_...` or OAuth (audience `https://app.sugra.ai/mcp`, scope `sugra:read`). Discovery is public. `tools/call` and `resources/read` need Bearer.
 
 claude.ai: Settings -> Connectors -> Add custom connector.
-ChatGPT: install skills from the Plugins Directory (https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef). Hosted MCP tools: Settings -> Connectors -> Add MCP server.
+ChatGPT: install skills from the Plugins Directory (https://url.sugra.ai/openai). Hosted MCP tools: Settings -> Connectors -> Add MCP server.
 
 Hosted tools: 8 gateway plus 3 composed (`resolve_entity`, `get_snapshot`, `get_timeseries`). Confirm with live `tools/list`.
 

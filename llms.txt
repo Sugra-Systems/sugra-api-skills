@@ -2,7 +2,7 @@
 
 Official Sugra API Agent Skills. HTTPS and MCP. Documentation truth: https://docs.sugra.ai (search and Ask AI).
 
-Published in ChatGPT / Codex Plugins Directory: https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef
+Published in ChatGPT / Codex Plugins Directory: https://url.sugra.ai/openai
 
 The Sugra API MCP server (hosted, https://mcp.sugra.ai) is published in Anthropic's Connectors Directory for Claude. Add to Claude: https://url.sugra.ai/claude
 
