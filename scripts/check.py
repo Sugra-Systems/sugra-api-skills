@@ -307,7 +307,7 @@ def main() -> None:
         fail("README must link the ChatGPT Plugins Directory listing")
     if "Not on GitHub yet" in readme:
         fail("README still says the pack is unpublished")
-    for client in ("Claude", "Claude Code", "ChatGPT", "Codex", "Grok", "Cursor", "Antigravity"):
+    for client in ("Claude", "Claude Code", "ChatGPT", "Codex", "Grok", "Cursor", "Antigravity", "GitHub Copilot", "VS Code"):
         if client not in readme:
             fail(f"README must name {client}")
     if "pip install sugra-api-mcp" not in readme:

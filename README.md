@@ -11,7 +11,7 @@
   <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License" alt="License"></a>
 </p>
 
-Official skills for [Sugra API](https://sugra.ai) and Sugra MCP, for Claude, Claude Code, ChatGPT, Codex, Grok, Cursor and Antigravity.
+Official skills for [Sugra API](https://sugra.ai) and Sugra MCP, for Claude, Claude Code, ChatGPT, Codex, Grok, Cursor, Antigravity, GitHub Copilot and VS Code.
 
 Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef).
 
@@ -73,6 +73,20 @@ agy plugin install ./sugra-api-plugins/antigravity
 ```
 
 Details in [sugra-api-plugins](https://github.com/Sugra-Systems/sugra-api-plugins#antigravity).
+
+### GitHub Copilot
+
+The plugin carries these skills and connects the hosted MCP server:
+
+```
+copilot plugin install sugra-api-skills@sugra-api-plugins
+```
+
+### VS Code
+
+```
+npx skills add https://mcp.sugra.ai
+```
 
 ### Hosted MCP
 
