@@ -11,7 +11,7 @@
   <a href="https://github.com/Sugra-Systems/sugra-api-skills/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Sugra-Systems/sugra-api-skills?label=License" alt="License"></a>
 </p>
 
-Official skills for [Sugra API](https://sugra.ai) and Sugra MCP, for Claude, Grok, Codex, Cursor, Gemini, and ChatGPT.
+Official skills for [Sugra API](https://sugra.ai) and Sugra MCP, for Claude, Claude Code, ChatGPT, Codex, Grok, Cursor and Antigravity.
 
 Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.com/plugins/plugins_6aa4f7db79848191a81e4048990545ef).
 
@@ -63,11 +63,16 @@ mkdir -p ~/.agents/skills/ && cp -R using-sugra-api live-docs auth-and-quota dis
 mkdir -p ~/.cursor/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing markets-data macro-data earth-data news-data ~/.cursor/skills/
 ```
 
-### Gemini CLI
+### Antigravity
+
+The Antigravity plugin carries these skills and connects the hosted MCP server:
 
 ```
-mkdir -p ~/.gemini/skills/ && cp -R using-sugra-api live-docs auth-and-quota discover-and-call envelope-and-attribution cross-domain-briefing markets-data macro-data earth-data news-data ~/.gemini/skills/
+git clone https://github.com/Sugra-Systems/sugra-api-plugins
+agy plugin install ./sugra-api-plugins/antigravity
 ```
+
+Details in [sugra-api-plugins](https://github.com/Sugra-Systems/sugra-api-plugins#antigravity).
 
 ### Hosted MCP
 
