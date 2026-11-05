@@ -6,6 +6,8 @@ Published in ChatGPT / Codex Plugins Directory: https://chatgpt.com/plugins/plug
 
 The hosted Sugra MCP server (https://mcp.sugra.ai) is published in Anthropic's Connectors Directory for Claude. Add to Claude: https://url.sugra.ai/claude
 
+It is also listed in the GitHub MCP Registry for GitHub Copilot and VS Code: https://url.sugra.ai/gh
+
 This repository is not the MCP server and not the HTTP cookbook.
 
 ## Skills
