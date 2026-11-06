@@ -17,7 +17,7 @@ Published in the ChatGPT / Codex Plugins Directory: [Sugra API](https://chatgpt.
 
 The hosted Sugra MCP server is published in Anthropic's Connectors Directory for Claude: [Add to Claude](https://url.sugra.ai/claude), and listed in the [GitHub MCP Registry](https://url.sugra.ai/gh) for GitHub Copilot and VS Code. Connect it there, and install these skills from this repository on any platform below.
 
-**Sugra Data covers 36 domains across 160+ primary sources: 1,600+ endpoints under one LLM-ready envelope, reached over HTTPS with Sugra API or from any MCP client with Sugra MCP. Pick a client below or jump straight to the [API key](https://app.sugra.ai/register).**
+**Sugra Data covers 36 domains across 200 primary sources: 1,600+ endpoints under one LLM-ready envelope, reached over HTTPS with Sugra API or from any MCP client with Sugra MCP. Pick a client below or jump straight to the [API key](https://app.sugra.ai/register).**
 
 Seven directions of Sugra Data (Sugra Finance, Sugra Macro, Sugra Entity, Sugra NetAtlas, Sugra News, Sugra Earth, Sugra Research). HTTPS and MCP are both complete paths.
 
